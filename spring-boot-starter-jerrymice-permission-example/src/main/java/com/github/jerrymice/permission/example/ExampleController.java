@@ -7,6 +7,7 @@ import com.github.jerrymice.permission.annotation.PermissionMeta;
 import com.github.jerrymice.permission.annotation.PermissionResult;
 import com.github.jerrymice.permission.engine.PermissionEngine;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -138,8 +139,9 @@ public class ExampleController {
      */
     @RequestMapping("/api/example/select")
     @ResponseBody
+    @Permission("R1001")
     @PermissionResult(var = "result", eval = "result.object.status.removes(i=>i>1004);result.object.data.each(i=>i.delete(['amount','ordernum']))", returnVar = "result")
-    public Result select(@PermissionMeta(var = "paramStatus", defaultValue = "E.status", eval = "paramStatus.filter(i=>i>1003)") Integer[] status, @PermissionMeta(defaultValue = "P.U.admin.id") String id) {
+    public Result select(String ab,@PermissionMeta(var = "paramStatus", defaultValue = "E.status", eval = "paramStatus.filter(i=>i>1003)") Integer[] status, @PermissionMeta(defaultValue = "P.U.admin.id") String id,String ddd) {
         ResultInfo<Object> result = new ResultInfo<>(true);
         HashMap<String, Object> map = new HashMap<>(1);
         List<QueryResult> data = new ArrayList<>();

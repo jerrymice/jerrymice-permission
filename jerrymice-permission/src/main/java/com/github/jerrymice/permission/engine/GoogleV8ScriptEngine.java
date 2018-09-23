@@ -7,15 +7,12 @@ import com.eclipsesource.v8.V8ScriptExecutionException;
 import com.eclipsesource.v8.utils.V8ObjectUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import javax.script.*;
 import java.io.*;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author tumingjian
@@ -26,7 +23,7 @@ import java.util.Map;
 public class GoogleV8ScriptEngine extends AbstractScriptEngine {
     private V8 engine;
     private boolean disabledUndefinedException = true;
-    final private  String FILE_NAME="v8.js";
+    final private String FILE_NAME = "v8.js";
 
     public GoogleV8ScriptEngine() {
         this(true);
@@ -35,11 +32,11 @@ public class GoogleV8ScriptEngine extends AbstractScriptEngine {
     public GoogleV8ScriptEngine(boolean disabledUndefinedException) {
         this.disabledUndefinedException = disabledUndefinedException;
         this.engine = V8.createV8Runtime();
-        try{
+        try {
             URL resource = GoogleV8ScriptEngine.class.getResource(FILE_NAME);
-            String s = IOUtils.toString(resource,"UTF-8");
+            String s = IOUtils.toString(resource, "UTF-8");
             this.engine.executeVoidScript(s);
-        }catch (IOException e){
+        } catch (IOException e) {
 
         }
     }
@@ -54,25 +51,12 @@ public class GoogleV8ScriptEngine extends AbstractScriptEngine {
         }
         try {
             Object object = this.engine.executeScript(script);
-            Object result = object;
-            if (object instanceof V8Object) {
-                V8Object v8Object = (V8Object) object;
-                if (!v8Object.isUndefined()) {
-                    if (v8Object instanceof V8Array) {
-                        result = V8ObjectUtils.toList((V8Array) v8Object);
-                    } else if (v8Object instanceof V8Object) {
-                        result = V8ObjectUtils.toMap(v8Object);
-                    } else {
-                        result = v8Object;
-                    }
-                }
-            }
-            return result;
+            return getAndReleaseV8Object(object);
         } catch (V8ScriptExecutionException e) {
             if (e.getMessage().contains("TypeError: Cannot read property") && disabledUndefinedException) {
                 log.warn("Google V8 engine running encountered 1 errors during,but not throw this exception," +
                         "eval function only return null eval," +
-                        "because your disabledUndefinedException is true,warning:"+e.getMessage());
+                        "because your disabledUndefinedException is true,warning:" + e.getMessage());
                 return null;
             } else {
                 throw e;
@@ -129,10 +113,10 @@ public class GoogleV8ScriptEngine extends AbstractScriptEngine {
         ObjectMapper build = new Jackson2ObjectMapperBuilder().build();
         try {
             String s = build.writer().writeValueAsString(value);
-            if(key.indexOf("P")==0 || key.indexOf("E")==0){
+            if (key.indexOf("P") == 0 || key.indexOf("E") == 0) {
                 this.engine.executeVoidScript("var " + key + "=" + s);
-            }else{
-                this.engine.executeVoidScript("var "+key+"="+s);
+            } else {
+                this.engine.executeVoidScript("var " + key + "=" + s);
             }
         } catch (Exception e) {
             throw new PermissionException(e);
@@ -141,7 +125,26 @@ public class GoogleV8ScriptEngine extends AbstractScriptEngine {
 
     @Override
     public Object get(String key) {
-        return this.engine.get(key);
+        Object object = this.engine.get(key);
+        return getAndReleaseV8Object(object);
+    }
+
+    private Object getAndReleaseV8Object(Object object) {
+        Object result = object;
+        if (object instanceof V8Object) {
+            V8Object v8Object = (V8Object) object;
+            if (!v8Object.isUndefined()) {
+                if (v8Object instanceof V8Array) {
+                    result = V8ObjectUtils.toList((V8Array) v8Object);
+                } else if (v8Object instanceof V8Object) {
+                    result = V8ObjectUtils.toMap(v8Object);
+                } else {
+                    result = v8Object;
+                }
+            }
+            v8Object.release();
+        }
+        return result;
     }
 
     @Override
@@ -150,5 +153,11 @@ public class GoogleV8ScriptEngine extends AbstractScriptEngine {
             this.engine.release();
         }
         super.finalize();
+    }
+
+    public void release() {
+        if (this.engine.isReleased()) {
+            this.engine.release();
+        }
     }
 }

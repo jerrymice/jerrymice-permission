@@ -5,6 +5,7 @@ import com.github.jerrymice.permission.resource.Character;
 import com.github.jerrymice.permission.resource.Property;
 import com.github.jerrymice.permission.resource.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpSession;
@@ -16,8 +17,9 @@ import java.util.*;
  * 说明:
  */
 @Component
+@Lazy
 public class PermissionLoaderExample implements PermissionLoader {
-    @Autowired
+    @Autowired(required = false)
     private HttpSession httpSession;
     @Override
     public Set<Property> loadResources() {

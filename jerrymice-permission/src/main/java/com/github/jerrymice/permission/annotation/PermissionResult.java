@@ -12,6 +12,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Repeatable(PermissionResults.class)
 public @interface PermissionResult {
     String var() default "result";
     String eval();
