@@ -45,7 +45,6 @@ public class GoogleV8ScriptEngine extends AbstractScriptEngine {
     @Override
     public Object eval(String script, ScriptContext context) throws ScriptException {
         if (context != null && context.getBindings(ScriptContext.ENGINE_SCOPE).size() == 0) {
-            context.setAttribute("context_scope", ScriptContext.ENGINE_SCOPE, ScriptContext.ENGINE_SCOPE);
             Bindings bindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
             bindings.forEach((k, v) -> put(k, v));
         }

@@ -21,7 +21,6 @@ import java.util.Set;
  */
 public class HttpSessionPermissionEngineStore implements PermissionEngineStore<HttpSession> {
     private String sessionKey = "__permission_engine_store_data__";
-    private static ThreadLocal<PermissionEngine> CURRENT_THREAD_ENGINE=new ThreadLocal<>();
     private PermissionEngineGenerator generator;
     private PermissionConfig config;
 
@@ -38,13 +37,9 @@ public class HttpSessionPermissionEngineStore implements PermissionEngineStore<H
 
     @Override
     public PermissionEngine get(HttpSession session) {
-        if(CURRENT_THREAD_ENGINE.get()!=null){
-            return CURRENT_THREAD_ENGINE.get();
-        }
         PermissionStoreData attribute = (PermissionStoreData)session.getAttribute(sessionKey);
         if(attribute!=null && session.getAttribute(sessionKey) instanceof PermissionStoreData){
             PermissionEngine engine = generator.defaultPermissionEngine(attribute, config);
-            CURRENT_THREAD_ENGINE.set(engine);
             return engine;
         }
         return null;
@@ -58,14 +53,12 @@ public class HttpSessionPermissionEngineStore implements PermissionEngineStore<H
         Map<String, Object> map = engine.extendData();
         PermissionStoreData permissionStoreData = new PermissionStoreData(user.size()>0?user.iterator().next():null, characters, resources, map);
         session.setAttribute(sessionKey, permissionStoreData);
-        CURRENT_THREAD_ENGINE.set(engine);
     }
 
     @Override
     public PermissionEngine remove(HttpSession session) {
         PermissionEngine engine = get(session);
         session.removeAttribute(sessionKey);
-        CURRENT_THREAD_ENGINE.remove();
         return engine;
     }
 

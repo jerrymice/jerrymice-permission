@@ -186,4 +186,15 @@ public class PermissionEngineProcessor {
         return result;
     }
 
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
+    public PermissionEngine getEngine() {
+        return engine;
+    }
+
+    public MethodInvocation getMethodInvocation() {
+        return methodInvocation;
+    }
 }

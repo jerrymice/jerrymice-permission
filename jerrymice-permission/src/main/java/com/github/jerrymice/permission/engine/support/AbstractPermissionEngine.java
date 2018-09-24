@@ -23,7 +23,7 @@ public abstract class AbstractPermissionEngine implements PermissionEngine {
     protected final String USER_VARIABLE_NAME = "U";
     protected final String CHARACTERS_VARIABLE_NAME = "C";
     protected final String RESOURCES_VARIABLE_NAME = "R";
-    private final String JAVA_SCRIPT_UNDEFINED="undefined";
+    private final String JAVA_SCRIPT_UNDEFINED = "undefined";
     protected ScriptEngine engine;
     private Map<String, Map<String, Property>> commonVariable = new HashMap<>();
     private Map<String, Object> extendData;
@@ -46,7 +46,7 @@ public abstract class AbstractPermissionEngine implements PermissionEngine {
         commonVariable.put(CHARACTERS_VARIABLE_NAME, characterMap);
         Map<String, Property> resourceMap = converterCode(this.permissionLoader.loadResources());
         commonVariable.put(RESOURCES_VARIABLE_NAME, resourceMap);
-        extendData=this.permissionLoader.loadExtendData();
+        extendData = this.permissionLoader.loadExtendData();
     }
 
     /**
@@ -149,6 +149,6 @@ public abstract class AbstractPermissionEngine implements PermissionEngine {
     @Override
     public void put(String name, Object value) {
         lazyInitScriptEngine();
-        this.engine.put(name,value);
+        this.engine.put(name, value);
     }
 }
