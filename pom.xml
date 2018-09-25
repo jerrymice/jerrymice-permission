@@ -11,6 +11,7 @@
         <module>jerrymice-permission</module>
         <module>spring-boot-starter-jerrymice-permission</module>
         <module>spring-boot-starter-jerrymice-permission-example</module>
+        <module>spring-boot-starter-jerrymice-permission-test</module>
     </modules>
     <parent>
         <groupId>com.github.jerrymice.common</groupId>
