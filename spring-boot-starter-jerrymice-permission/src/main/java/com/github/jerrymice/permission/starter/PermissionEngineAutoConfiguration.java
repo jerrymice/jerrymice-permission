@@ -1,6 +1,7 @@
 package com.github.jerrymice.permission.starter;
 
 
+import com.github.jerrymice.permission.boot.PermissionEngineWebArgumentResolver;
 import com.github.jerrymice.permission.config.PermissionConfig;
 import com.github.jerrymice.permission.config.PermissionEngineGenerator;
 import com.github.jerrymice.permission.config.PermissionService;
@@ -11,6 +12,7 @@ import com.github.jerrymice.permission.advisor.PermissionEngineAdvisor;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -18,9 +20,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.web.context.request.RequestContextListener;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.mvc.method.annotation.ServletWebArgumentResolverAdapter;
 
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * @author tumingjian
@@ -72,11 +78,22 @@ public class PermissionEngineAutoConfiguration {
     public PermissionEngineAdvisor permissionEngineAspect() {
         return new PermissionEngineAdvisor();
     }
-//
-//    @Bean
-//    public PermissionEngineBeanPostProcessor beanFactoryPostProcessor() {
-//        return new PermissionEngineBeanPostProcessor();
-//    }
+
+    @Bean
+    public PermissionEngineWebArgumentResolver permissionEngineWebArgumentResolver(){
+        return new PermissionEngineWebArgumentResolver();
+    }
+
+    @Configuration
+    @ConditionalOnBean(PermissionEngineWebArgumentResolver.class)
+    public class PermissionWebMvcConfigurer implements WebMvcConfigurer{
+        @Autowired
+        private PermissionEngineWebArgumentResolver resolver;
+        @Override
+        public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+            resolvers.add(new ServletWebArgumentResolverAdapter(resolver));
+        }
+    }
 
 
 
