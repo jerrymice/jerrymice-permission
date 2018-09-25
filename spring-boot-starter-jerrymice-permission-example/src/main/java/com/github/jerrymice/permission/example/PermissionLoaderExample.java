@@ -1,6 +1,6 @@
 package com.github.jerrymice.permission.example;
 
-import com.github.jerrymice.permission.config.PermissionLoader;
+import com.github.jerrymice.permission.config.PermissionService;
 import com.github.jerrymice.permission.resource.Character;
 import com.github.jerrymice.permission.resource.Property;
 import com.github.jerrymice.permission.resource.Resource;
@@ -18,7 +18,7 @@ import java.util.*;
  */
 @Component
 @Lazy
-public class PermissionLoaderExample implements PermissionLoader {
+public class PermissionLoaderExample implements PermissionService {
     @Autowired(required = false)
     private HttpSession httpSession;
     @Override

@@ -1,4 +1,4 @@
-package com.github.jerrymice.permission.spring;
+package com.github.jerrymice.permission.advisor;
 
 import com.github.jerrymice.permission.engine.PermissionEngine;
 import com.github.jerrymice.permission.factory.PermissionEngineFactory;

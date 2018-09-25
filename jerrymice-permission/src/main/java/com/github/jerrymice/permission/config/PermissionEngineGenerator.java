@@ -14,7 +14,7 @@ public interface PermissionEngineGenerator {
      * @param permissionLoader 基本参数
      * @return 返回一个唯一的key
      */
-    Object getKey(PermissionLoader permissionLoader);
+    Object getKey(PermissionService permissionLoader);
 
     /**
      * 创建引擎.如果要创建其他脚本语言的引擎可以自己实现这个接口
@@ -22,7 +22,7 @@ public interface PermissionEngineGenerator {
      * @param config   全局配置
      * @return  返回一个引擎
      */
-    default PermissionEngine defaultPermissionEngine(PermissionLoader permissionLoader, PermissionConfig config) {
+    default PermissionEngine defaultPermissionEngine(PermissionService permissionLoader, PermissionConfig config) {
         return new GoogleV8PermissionEngine(permissionLoader, config.isMixtureSearch());
     }
 }

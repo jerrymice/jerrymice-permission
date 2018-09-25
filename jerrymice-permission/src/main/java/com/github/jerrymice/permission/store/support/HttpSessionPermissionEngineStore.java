@@ -2,15 +2,12 @@ package com.github.jerrymice.permission.store.support;
 
 import com.github.jerrymice.permission.config.PermissionConfig;
 import com.github.jerrymice.permission.config.PermissionEngineGenerator;
-import com.github.jerrymice.permission.config.PermissionLoader;
 import com.github.jerrymice.permission.engine.PermissionEngine;
-import com.github.jerrymice.permission.factory.PermissionEngineFactory;
 import com.github.jerrymice.permission.resource.Property;
 import com.github.jerrymice.permission.store.PermissionEngineStore;
 import com.github.jerrymice.permission.store.PermissionStoreData;
 
 import javax.servlet.http.HttpSession;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 

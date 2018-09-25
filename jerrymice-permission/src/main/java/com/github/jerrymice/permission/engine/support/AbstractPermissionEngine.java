@@ -1,11 +1,9 @@
 package com.github.jerrymice.permission.engine.support;
 
-import com.github.jerrymice.permission.annotation.PermissionResult;
 import com.github.jerrymice.permission.engine.PermissionEngine;
 import com.github.jerrymice.permission.engine.PermissionException;
-import com.github.jerrymice.permission.config.PermissionLoader;
+import com.github.jerrymice.permission.config.PermissionService;
 import com.github.jerrymice.permission.resource.Property;
-import org.springframework.util.CollectionUtils;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
@@ -18,7 +16,7 @@ import java.util.stream.Collectors;
  * 说明:
  */
 public abstract class AbstractPermissionEngine implements PermissionEngine {
-    protected PermissionLoader permissionLoader;
+    protected PermissionService permissionLoader;
     protected boolean mixtureSearch = false;
     protected final String USER_VARIABLE_NAME = "U";
     protected final String CHARACTERS_VARIABLE_NAME = "C";
@@ -28,7 +26,7 @@ public abstract class AbstractPermissionEngine implements PermissionEngine {
     private Map<String, Map<String, Property>> commonVariable = new HashMap<>();
     private Map<String, Object> extendData;
 
-    public AbstractPermissionEngine(PermissionLoader permissionLoader, boolean mixtureSearch) {
+    public AbstractPermissionEngine(PermissionService permissionLoader, boolean mixtureSearch) {
         this.mixtureSearch = mixtureSearch;
         this.permissionLoader = permissionLoader;
         initCommonVariable();

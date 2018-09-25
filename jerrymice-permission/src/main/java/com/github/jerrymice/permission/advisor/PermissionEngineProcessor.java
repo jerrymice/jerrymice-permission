@@ -1,4 +1,4 @@
-package com.github.jerrymice.permission.spring;
+package com.github.jerrymice.permission.advisor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jerrymice.permission.annotation.Permission;

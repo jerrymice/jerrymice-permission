@@ -1,4 +1,4 @@
-package com.github.jerrymice.permission.spring;
+package com.github.jerrymice.permission.advisor;
 
 
 import org.springframework.aop.ClassFilter;

@@ -1,6 +1,5 @@
 package com.github.jerrymice.permission.store;
 
-import com.github.jerrymice.permission.config.PermissionLoader;
 import com.github.jerrymice.permission.engine.PermissionEngine;
 
 /**

@@ -1,7 +1,7 @@
 package com.github.jerrymice.permission.factory.support;
 
 import com.github.jerrymice.permission.listener.PermissionEngineRequestContextHolder;
-import com.github.jerrymice.permission.config.PermissionLoader;
+import com.github.jerrymice.permission.config.PermissionService;
 import com.github.jerrymice.permission.store.support.HttpSessionPermissionEngineStore;
 
 /**
@@ -22,7 +22,7 @@ public class WebPermissionEngineFactory extends PermissionEngineFactorySupport {
     }
     public class PermissionEngineGenerator implements com.github.jerrymice.permission.config.PermissionEngineGenerator {
         @Override
-        public Object getKey(PermissionLoader permissionLoader) {
+        public Object getKey(PermissionService permissionLoader) {
             return PermissionEngineRequestContextHolder.getSession();
         }
     }

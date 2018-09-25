@@ -18,7 +18,7 @@ import java.util.Set;
  */
 public class PermissionEngineFactorySupport implements PermissionEngineFactory {
 
-    private PermissionLoader loader;
+    private PermissionService loader;
     private PermissionConfig config;
     private PermissionRejectProcessor rejectProcessor;
     private PermissionEngineGenerator generator;
@@ -30,7 +30,7 @@ public class PermissionEngineFactorySupport implements PermissionEngineFactory {
 
     public class UsernameGenerator implements PermissionEngineGenerator {
         @Override
-        public Object getKey(PermissionLoader permissionLoader) {
+        public Object getKey(PermissionService permissionLoader) {
             return permissionLoader.loadUser();
         }
     }
@@ -81,11 +81,11 @@ public class PermissionEngineFactorySupport implements PermissionEngineFactory {
     }
 
     @Override
-    public PermissionLoader getLoader() {
+    public PermissionService getLoader() {
         return loader;
     }
 
-    public void setLoader(PermissionLoader loader) {
+    public void setLoader(PermissionService loader) {
         this.loader = loader;
     }
 

@@ -1,6 +1,6 @@
 package com.github.jerrymice.permission.store;
 
-import com.github.jerrymice.permission.config.PermissionLoader;
+import com.github.jerrymice.permission.config.PermissionService;
 import com.github.jerrymice.permission.resource.Property;
 import lombok.Data;
 
@@ -13,13 +13,13 @@ import java.util.Set;
  * 说明:
  */
 @Data
-public class PermissionStoreData implements PermissionLoader {
+public class PermissionStoreData implements PermissionService {
     private Set<Property> characters;
     private Set<Property> resources;
     private Property user;
     private Map<String, Object> extendData;
 
-    public PermissionStoreData(PermissionLoader permissionLoader) {
+    public PermissionStoreData(PermissionService permissionLoader) {
         this.characters = permissionLoader.loadCharacters();
         this.resources = permissionLoader.loadResources();
         this.user = permissionLoader.loadUser();

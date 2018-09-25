@@ -1,11 +1,9 @@
 package com.github.jerrymice.permission.engine.support;
 
-import com.eclipsesource.v8.V8Object;
-import com.github.jerrymice.permission.config.PermissionLoader;
+import com.github.jerrymice.permission.config.PermissionService;
 import com.github.jerrymice.permission.engine.GoogleV8ScriptEngine;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 
 /**
  * @author tumingjian
@@ -15,11 +13,11 @@ import javax.script.ScriptEngineManager;
 public class GoogleV8PermissionEngine extends AbstractPermissionEngine {
     private GoogleV8ScriptEngine googleV8ScriptEngine;
 
-    public GoogleV8PermissionEngine(PermissionLoader permissionLoader) {
+    public GoogleV8PermissionEngine(PermissionService permissionLoader) {
         this(permissionLoader, false);
     }
 
-    public GoogleV8PermissionEngine(PermissionLoader permissionLoader, boolean mixtureSearch) {
+    public GoogleV8PermissionEngine(PermissionService permissionLoader, boolean mixtureSearch) {
         super(permissionLoader, mixtureSearch);
     }
 

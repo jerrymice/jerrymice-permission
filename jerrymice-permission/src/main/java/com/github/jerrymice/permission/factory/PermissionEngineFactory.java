@@ -3,7 +3,7 @@ package com.github.jerrymice.permission.factory;
 import com.github.jerrymice.permission.engine.PermissionEngine;
 import com.github.jerrymice.permission.config.PermissionConfig;
 import com.github.jerrymice.permission.config.PermissionEngineGenerator;
-import com.github.jerrymice.permission.config.PermissionLoader;
+import com.github.jerrymice.permission.config.PermissionService;
 import com.github.jerrymice.permission.config.PermissionRejectProcessor;
 import com.github.jerrymice.permission.store.PermissionEngineStore;
 
@@ -19,7 +19,7 @@ public interface PermissionEngineFactory {
 
     PermissionEngineStore getStore();
 
-    PermissionLoader getLoader();
+    PermissionService getLoader();
 
     PermissionConfig getConfig();
 

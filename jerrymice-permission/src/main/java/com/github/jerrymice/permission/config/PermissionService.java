@@ -11,7 +11,7 @@ import java.util.Set;
  * @date 2018/9/13
  * 说明:
  */
-public interface PermissionLoader extends Serializable {
+public interface PermissionService extends Serializable {
     Set<Property> loadResources();
 
     Set<Property> loadCharacters();

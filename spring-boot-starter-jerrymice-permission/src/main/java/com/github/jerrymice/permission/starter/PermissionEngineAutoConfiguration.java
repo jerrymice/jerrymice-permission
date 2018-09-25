@@ -3,12 +3,12 @@ package com.github.jerrymice.permission.starter;
 
 import com.github.jerrymice.permission.config.PermissionConfig;
 import com.github.jerrymice.permission.config.PermissionEngineGenerator;
-import com.github.jerrymice.permission.config.PermissionLoader;
+import com.github.jerrymice.permission.config.PermissionService;
 import com.github.jerrymice.permission.config.PermissionRejectProcessor;
 import com.github.jerrymice.permission.factory.PermissionEngineFactory;
 import com.github.jerrymice.permission.factory.support.WebPermissionEngineFactory;
-import com.github.jerrymice.permission.spring.PermissionEngineAdvisor;
-import com.github.jerrymice.permission.spring.processor.PermissionEngineBeanPostProcessor;
+import com.github.jerrymice.permission.advisor.PermissionEngineAdvisor;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -42,19 +42,19 @@ public class PermissionEngineAutoConfiguration {
     @Configuration
     @ConditionalOnMissingBean(PermissionEngineGenerator.class)
     @Lazy
-    public static class SpringPermissionEngineGenerator implements PermissionEngineGenerator {
+    public static class WebMvcPermissionEngineGenerator implements PermissionEngineGenerator {
         @Autowired
         private HttpSession session;
 
         @Override
-        public Object getKey(PermissionLoader permissionLoader) {
+        public Object getKey(PermissionService permissionLoader) {
             return session;
         }
     }
     @Bean
     @ConditionalOnMissingBean(PermissionEngineFactory.class)
     public PermissionEngineFactory permissionFactory(
-            PermissionLoader loader,
+            PermissionService loader,
             PermissionEngineGenerator storeKeyGenerator,
             @Autowired(required = false) PermissionRejectProcessor processor) {
         WebPermissionEngineFactory webPermissionEngineFactory = new WebPermissionEngineFactory();

@@ -1,9 +1,7 @@
 package com.github.jerrymice.permission.store.support;
 
-import com.github.jerrymice.permission.config.PermissionLoader;
 import com.github.jerrymice.permission.engine.PermissionEngine;
 import com.github.jerrymice.permission.store.PermissionEngineStore;
-import com.github.jerrymice.permission.store.PermissionStoreData;
 
 import java.util.concurrent.ConcurrentHashMap;
 
