@@ -23,6 +23,7 @@ public class PermissionEngineFactorySupport implements PermissionEngineFactory {
     private PermissionRejectProcessor rejectProcessor;
     private PermissionEngineGenerator generator;
     private PermissionEngineStore store;
+    private ThreadLocal<PermissionEngine> localEngine = new ThreadLocal<>();
 
     public PermissionEngineFactorySupport() {
         initDefaultConfig();
@@ -56,14 +57,28 @@ public class PermissionEngineFactorySupport implements PermissionEngineFactory {
 
     @Override
     public PermissionEngine getPermissionEngine() {
+        if (config.isThreadLocalCache()) {
+            PermissionEngine engine = localEngine.get();
+            if (engine != null) {
+                return engine;
+            }
+        }
         Object key = generator.getKey(loader);
         PermissionEngine cacheEngine = store.get(key);
         if (cacheEngine != null) {
-            return cacheEngine;
+            return cacheThreadLocal(cacheEngine);
         } else {
-            store.put(key, generator.defaultPermissionEngine(loader, config));
-            return store.get(key);
+            PermissionEngine permissionEngine = generator.defaultPermissionEngine(loader, config);
+            store.put(key, permissionEngine);
+            return cacheThreadLocal(permissionEngine);
         }
+    }
+
+    private PermissionEngine cacheThreadLocal(PermissionEngine engine) {
+        if (config.isThreadLocalCache()) {
+            localEngine.set(engine);
+        }
+        return engine;
     }
 
     @Override

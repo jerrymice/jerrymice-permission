@@ -12,4 +12,5 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class PermissionConfig {
     private boolean mixtureSearch;
+    private boolean threadLocalCache;
 }

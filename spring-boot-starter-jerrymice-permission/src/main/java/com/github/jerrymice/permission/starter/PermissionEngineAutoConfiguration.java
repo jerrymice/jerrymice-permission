@@ -85,7 +85,6 @@ public class PermissionEngineAutoConfiguration {
     }
 
     @Configuration
-    @ConditionalOnBean(PermissionEngineWebArgumentResolver.class)
     public class PermissionWebMvcConfigurer implements WebMvcConfigurer{
         @Autowired
         private PermissionEngineWebArgumentResolver resolver;

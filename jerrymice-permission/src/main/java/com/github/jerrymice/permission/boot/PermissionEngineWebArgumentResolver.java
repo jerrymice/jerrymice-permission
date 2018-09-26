@@ -17,10 +17,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 public class PermissionEngineWebArgumentResolver implements WebArgumentResolver, ApplicationContextAware{
     private PermissionEngineFactory factory;
 
-    public PermissionEngineWebArgumentResolver() {
-    }
-
-
     @Override
     public Object resolveArgument(MethodParameter methodParameter, NativeWebRequest webRequest) throws Exception {
         boolean assignableFrom = methodParameter.getParameterType().isAssignableFrom(PermissionEngine.class);
