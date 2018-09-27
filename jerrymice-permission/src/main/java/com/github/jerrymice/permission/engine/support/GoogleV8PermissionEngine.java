@@ -28,6 +28,8 @@ public class GoogleV8PermissionEngine extends AbstractPermissionEngine {
 
     @Override
     public void release() {
-        this.googleV8ScriptEngine.release();
+        if(googleV8ScriptEngine!=null){
+            this.googleV8ScriptEngine.release();
+        }
     }
 }

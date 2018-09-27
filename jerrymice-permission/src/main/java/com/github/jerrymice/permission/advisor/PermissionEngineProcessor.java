@@ -9,15 +9,18 @@ import com.github.jerrymice.permission.engine.PermissionEngine;
 import com.github.jerrymice.permission.engine.PermissionException;
 import com.github.jerrymice.permission.util.AnnotationUtils;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.TypeVariable;
 
 /**
  * @author tumingjian
- * 说明:负责处理所有权限相关的注解方法与参数
+ *         说明:负责处理所有权限相关的注解方法与参数
  */
 public class PermissionEngineProcessor {
     /**
@@ -25,29 +28,13 @@ public class PermissionEngineProcessor {
      */
     private PermissionEngine engine;
     /**
-     * 当前方法的@Permission数组
-     */
-    private Permission[] permissions;
-    /**
-     * 当前方法的@PermissionResult数组
-     */
-    private PermissionResult[] permissionResults;
-    /**
      * 当前方法的AOP拦截对象
      */
     private MethodInvocation methodInvocation;
     /**
-     * 当前方法参数
-     */
-    private Parameter[] parameters;
-    /**
-     * 当前方法参数的值对象
+     * 当前方法参数对象
      */
     private Object[] arguments;
-    /**
-     * 当前方法的返回值类型
-     */
-    private Class<?> returnType;
     /**
      * 权限不足时的后续结果处理拦截对象
      */
@@ -56,16 +43,17 @@ public class PermissionEngineProcessor {
      * json转换.用于将一个结果对象转换为方法的返回值对象
      */
     private ObjectMapper objectMapper = Jackson2ObjectMapperBuilder.json().build();
+    /**
+     * 当前方法的基本信息
+     */
+    private MethodInvocationInfo methodInvocationInfo;
 
 
-    public PermissionEngineProcessor(MethodInvocation methodInvocation, PermissionEngine engine, PermissionRejectProcessor rejectProcessor) {
+    public PermissionEngineProcessor(MethodInvocationInfo methodInvocationInfo, MethodInvocation methodInvocation, PermissionEngine engine, PermissionRejectProcessor rejectProcessor) {
         this.methodInvocation = methodInvocation;
         this.engine = engine;
-        this.permissions = AnnotationUtils.getPermissionAnnotation(this.methodInvocation.getMethod());
-        this.permissionResults = AnnotationUtils.getPermissionResultAnnotation(this.methodInvocation.getMethod());
-        this.parameters = methodInvocation.getMethod().getParameters();
+        this.methodInvocationInfo = methodInvocationInfo;
         this.arguments = methodInvocation.getArguments();
-        this.returnType = methodInvocation.getMethod().getReturnType();
         this.rejectProcessor = rejectProcessor;
     }
 
@@ -85,6 +73,10 @@ public class PermissionEngineProcessor {
         this.objectMapper = objectMapper;
     }
 
+    public MethodInvocationInfo getMethodInvocationInfo() {
+        return methodInvocationInfo;
+    }
+
     /**
      * 判断权限是否足够
      *
@@ -93,7 +85,7 @@ public class PermissionEngineProcessor {
      */
     protected boolean isPermission() throws Throwable {
         boolean isPermission = false;
-        for (Permission per : permissions) {
+        for (Permission per : methodInvocationInfo.getPermissions()) {
             String value = per.value();
             int type = engine.type(value);
             if (type == 1) {
@@ -112,14 +104,17 @@ public class PermissionEngineProcessor {
 
     /**
      * 循环处理该方法上所有有@PermissionMeta的参数
-     * @return  返回处理后该方法参数的数组
+     *
+     * @return 返回处理后该方法参数的数组
      */
     protected Object[] methodParameterProcess() {
         Object[] result = this.arguments;
+        Parameter[] parameters = methodInvocationInfo.getParameters();
+        PermissionMeta[] permissionMetas = methodInvocationInfo.getPermissionMetas();
         for (int i = 0; i < parameters.length; i++) {
-            PermissionMeta annotation = parameters[i].getAnnotation(PermissionMeta.class);
+            PermissionMeta annotation = permissionMetas[i];
             if (annotation != null) {
-                Object object = methodParameterProcess(engine, parameters[i], annotation, null);
+                Object object = methodParameterProcess(engine, parameters[i], methodInvocationInfo.getParameterNames()[i], annotation, this.arguments[i]);
                 result[i] = object;
             }
         }
@@ -135,7 +130,7 @@ public class PermissionEngineProcessor {
      * @param value      当前参数的原始值.
      * @return 返回当前参数处理后的新值
      */
-    private Object methodParameterProcess(PermissionEngine engine, Parameter parameter, PermissionMeta annotation, Object value) {
+    private Object methodParameterProcess(PermissionEngine engine, Parameter parameter, String parameterName, PermissionMeta annotation, Object value) {
         Object result = value;
         /**
          * 处理PermissionMeta默认值
@@ -146,10 +141,10 @@ public class PermissionEngineProcessor {
         /**
          * 定义JS变量
          */
-        String varName = StringUtils.isEmpty(annotation.var()) ? parameter.getName() : annotation.var();
+        String varName = StringUtils.isEmpty(annotation.var()) ? parameterName : annotation.var();
         String returnVar = annotation.returnVar();
-        if(returnVar.equals("")){
-            returnVar=varName;
+        if (returnVar.equals("")) {
+            returnVar = varName;
         }
         engine.put(varName, result);
         /**
@@ -162,31 +157,33 @@ public class PermissionEngineProcessor {
         /**
          * 将结果转换为方法参数的类型.
          */
-        return converter(result,parameter.getType());
+        return converter(result, parameter.getType());
     }
 
 
     /**
      * 循环处理该方法上有一个或多个@PermissionResult的返回值
-     * @param beforeResult  处理前方法的返回值.
-     * @return  返回处理后该方法的返回值
+     *
+     * @param beforeResult 处理前方法的返回值.
+     * @return 返回处理后该方法的返回值
      */
     protected Object eachPermissionResult(Object beforeResult) {
         Object result = beforeResult;
-        for (PermissionResult annotation : permissionResults) {
+        for (PermissionResult annotation : methodInvocationInfo.getPermissionResults()) {
             result = permissionResultProcess(annotation, result);
         }
 
-        return converter(result,beforeResult!=null?beforeResult.getClass():returnType);
+        return converter(result, beforeResult != null ? beforeResult.getClass() : methodInvocationInfo.getReturnType());
     }
 
     /**
      * 对象转换
-     * @param result  要转换的对象
+     *
+     * @param result 要转换的对象
      * @param clazz  要转换的类
      * @return 转换后的值
      */
-    private Object converter(Object result,Class<?> clazz) {
+    private Object converter(Object result, Class<?> clazz) {
         if (result != null && !result.getClass().isAssignableFrom(clazz)) {
             return objectMapper.convertValue(result, clazz);
         } else {
@@ -196,6 +193,7 @@ public class PermissionEngineProcessor {
 
     /**
      * 处理单个 PermissionResult 注解
+     *
      * @param annotation   当前要处理的PermissionResult注解
      * @param beforeResult 处理前方法的返回值
      * @return 返回处理后该方法的返回值
@@ -206,8 +204,8 @@ public class PermissionEngineProcessor {
             String value = annotation.eval();
             String var = annotation.var();
             String returnVar = annotation.returnVar();
-            if(returnVar.equals("")){
-                returnVar=var;
+            if (returnVar.equals("")) {
+                returnVar = var;
             }
             try {
                 engine.put(var, beforeResult);
@@ -225,12 +223,13 @@ public class PermissionEngineProcessor {
 
     /**
      * 该类的入口方法.负责调用其他方法,来完成对权限,方法参数,和方法结果的检查和控制
-     * @return  返回该方法执行后的结果
-     * @throws Throwable   异常信息
+     *
+     * @return 返回该方法执行后的结果
+     * @throws Throwable 异常信息
      */
     public Object process() throws Throwable {
         Method method = methodInvocation.getMethod();
-        if (permissions != null) {
+        if (methodInvocationInfo.getPermissions() != null) {
             /**
              * 判断权限是否足够
              */
@@ -252,7 +251,7 @@ public class PermissionEngineProcessor {
          */
         Object proxy = methodInvocation.getThis();
         Object result = method.invoke(proxy, args);
-        if (permissionResults != null) {
+        if (methodInvocationInfo.getPermissionResults() != null) {
             result = eachPermissionResult(result);
         }
         return result;

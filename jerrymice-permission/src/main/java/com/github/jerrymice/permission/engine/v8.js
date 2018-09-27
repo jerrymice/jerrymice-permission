@@ -26,11 +26,31 @@ Object.prototype.delete = function (names) {
         for (var i = 0; i < names.length; i++) {
             var name = names[i];
             if (this.hasOwnProperty(name)) {
-                this[names[i]]=null;
+                this[names[i]] = null;
             }
         }
     } else {
-        this[names]=null;
+        this[names] = null;
+    }
+    return this;
+}
+/**
+ * 取两个数组的交集
+ * @param args
+ */
+Array.prototype.intersect = function (args) {
+    for (var i = 0; i < this.length; i++) {
+        var intersect = false
+        for (var j = 0; j < args.length; j++) {
+            if (this[i] == args[j]) {
+                intersect = true;
+                break;
+            }
+        }
+        if (!intersect) {
+            this.splice(i, 1);
+            i--;
+        }
     }
     return this;
 }

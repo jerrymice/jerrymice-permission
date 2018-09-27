@@ -18,9 +18,8 @@ import java.util.*;
  * 说明:
  */
 @Component
-@Lazy
 public class PermissionLoaderExample implements PermissionService {
-    @Autowired(required = false)
+    @Autowired
     private HttpSession httpSession;
     @Override
     public Set<Property> loadResources() {
