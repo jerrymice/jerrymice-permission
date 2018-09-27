@@ -65,8 +65,8 @@ public class PermissionEngineAutoConfiguration {
             PermissionEngineGenerator storeKeyGenerator,
             @Autowired(required = false) PermissionRejectProcessor processor) {
         WebPermissionEngineFactory webPermissionEngineFactory = new WebPermissionEngineFactory();
-        PermissionConfig permissionConfig = new PermissionConfig().setMixtureSearch(permissionProperties
-                .isMixtureSearch())
+        PermissionConfig permissionConfig = new PermissionConfig()
+                .setMixtureSearch(permissionProperties.isMixtureSearch())
                 .setThreadLocalCache(permissionProperties.isThreadLocalCache());
         webPermissionEngineFactory.setConfig(permissionConfig);
 
