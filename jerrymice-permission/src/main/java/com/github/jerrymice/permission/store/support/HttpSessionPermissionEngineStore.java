@@ -5,7 +5,7 @@ import com.github.jerrymice.permission.config.PermissionEngineGenerator;
 import com.github.jerrymice.permission.engine.PermissionEngine;
 import com.github.jerrymice.permission.resource.Property;
 import com.github.jerrymice.permission.store.PermissionEngineStore;
-import com.github.jerrymice.permission.store.PermissionStoreData;
+import com.github.jerrymice.permission.store.PermissionStoreDataWapper;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;
@@ -34,8 +34,8 @@ public class HttpSessionPermissionEngineStore implements PermissionEngineStore<H
 
     @Override
     public PermissionEngine get(HttpSession session) {
-        PermissionStoreData attribute = (PermissionStoreData)session.getAttribute(sessionKey);
-        if(attribute!=null && session.getAttribute(sessionKey) instanceof PermissionStoreData){
+        PermissionStoreDataWapper attribute = (PermissionStoreDataWapper)session.getAttribute(sessionKey);
+        if(attribute!=null && session.getAttribute(sessionKey) instanceof PermissionStoreDataWapper){
             PermissionEngine engine = generator.defaultPermissionEngine(attribute, config);
             return engine;
         }
@@ -48,8 +48,8 @@ public class HttpSessionPermissionEngineStore implements PermissionEngineStore<H
         Set<Property> characters = engine.characters();
         Set<Property> resources = engine.resources();
         Map<String, Object> map = engine.extendData();
-        PermissionStoreData permissionStoreData = new PermissionStoreData(user.size()>0?user.iterator().next():null, characters, resources, map);
-        session.setAttribute(sessionKey, permissionStoreData);
+        PermissionStoreDataWapper permissionStoreDataWapper = new PermissionStoreDataWapper(user.size()>0?user.iterator().next():null, characters, resources, map);
+        session.setAttribute(sessionKey, permissionStoreDataWapper);
     }
 
     @Override
@@ -61,6 +61,6 @@ public class HttpSessionPermissionEngineStore implements PermissionEngineStore<H
 
     @Override
     public boolean contain(HttpSession session) {
-        return session.getAttribute(sessionKey) != null && session.getAttribute(sessionKey) instanceof PermissionStoreData;
+        return session.getAttribute(sessionKey) != null && session.getAttribute(sessionKey) instanceof PermissionStoreDataWapper;
     }
 }

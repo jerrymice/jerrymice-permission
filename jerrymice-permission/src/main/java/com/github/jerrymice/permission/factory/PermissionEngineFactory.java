@@ -26,4 +26,5 @@ public interface PermissionEngineFactory {
     PermissionRejectProcessor getRejectProcessor();
 
     PermissionEngineGenerator getGenerator();
+    void removeLocalCache();
 }

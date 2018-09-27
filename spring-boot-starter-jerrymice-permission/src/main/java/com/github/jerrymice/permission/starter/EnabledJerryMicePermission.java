@@ -10,7 +10,6 @@ import java.lang.annotation.*;
 
 /**
  * @author tumingjian
- * @date 2018/9/14
  * 说明:
  */
 @Target(ElementType.TYPE)

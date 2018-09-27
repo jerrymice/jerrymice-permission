@@ -9,12 +9,13 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.Ordered;
+import org.springframework.web.servlet.DispatcherServlet;
 
 import java.io.Serializable;
 
 /**
  * @author tumingjian
- * 说明:Spring AOP织入者.负责在指定的切入点上织入通知类
+ *         说明:Spring AOP织入者.负责在指定的切入点上织入通知类
  */
 public class PermissionEngineAdvisor implements PointcutAdvisor, ApplicationContextAware, Ordered, Serializable {
     /**
@@ -22,13 +23,17 @@ public class PermissionEngineAdvisor implements PointcutAdvisor, ApplicationCont
      */
     private PermissionEnginePointCut pointcut;
     /**
-     *通知类
+     * 通知类
      */
     private PermissionEngineAdvice advice;
     /**
      * 通知类的要织入的序号
      */
     private int order;
+    /**
+     * 是否是web环境
+     */
+    private boolean isWebEnv = false;
 
     public PermissionEngineAdvisor() {
         this.pointcut = new PermissionEnginePointCut();
@@ -62,7 +67,8 @@ public class PermissionEngineAdvisor implements PointcutAdvisor, ApplicationCont
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.advice.context=applicationContext;
+        this.advice.context = applicationContext;
+        isWebEnv = applicationContext.getBean(DispatcherServlet.class) != null;
     }
 
     public void setPointcut(PermissionEnginePointCut pointcut) {
@@ -86,8 +92,17 @@ public class PermissionEngineAdvisor implements PointcutAdvisor, ApplicationCont
                 this.factory = context.getBean(PermissionEngineFactory.class);
             }
             PermissionEngine engine = factory.getPermissionEngine();
-            PermissionEngineProcessor processor = new PermissionEngineProcessor(invocation, engine, factory.getRejectProcessor());
-            Object result = processor.process();
+            Object result = null;
+            try {
+                PermissionEngineProcessor processor = new PermissionEngineProcessor(invocation, engine, factory.getRejectProcessor());
+                result = processor.process();
+            } finally {
+                //如果是web环境
+                if (isWebEnv) {
+                    engine.release();
+                    factory.removeLocalCache();
+                }
+            }
             return result;
         }
     }

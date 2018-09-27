@@ -13,20 +13,20 @@ import java.util.Set;
  * 说明:
  */
 @Data
-public class PermissionStoreData implements PermissionService {
+public class PermissionStoreDataWapper implements PermissionService {
     private Set<Property> characters;
     private Set<Property> resources;
     private Property user;
     private Map<String, Object> extendData;
 
-    public PermissionStoreData(PermissionService permissionLoader) {
+    public PermissionStoreDataWapper(PermissionService permissionLoader) {
         this.characters = permissionLoader.loadCharacters();
         this.resources = permissionLoader.loadResources();
         this.user = permissionLoader.loadUser();
         this.extendData = permissionLoader.loadExtendData();
     }
 
-    public PermissionStoreData(Property user,Set<Property> characters, Set<Property> resources, Map<String, Object> extendData) {
+    public PermissionStoreDataWapper(Property user, Set<Property> characters, Set<Property> resources, Map<String, Object> extendData) {
         this.characters = characters;
         this.resources = resources;
         this.user = user;
