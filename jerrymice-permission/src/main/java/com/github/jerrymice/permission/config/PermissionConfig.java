@@ -2,6 +2,9 @@ package com.github.jerrymice.permission.config;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.core.io.Resource;
+
+import java.util.List;
 
 /**
  * @author tumingjian
@@ -20,4 +23,8 @@ public class PermissionConfig {
      * @See PermissionEngineFactorySupport#getPermissionEngine方法
      */
     private boolean threadLocalCache = true;
+    /**
+     * 扩展脚本文件.会在创建引擎之后立即加载这些脚本文件
+     */
+    private List<Resource> extendScriptFile;
 }

@@ -4,9 +4,12 @@ import com.github.jerrymice.permission.engine.PermissionEngine;
 import com.github.jerrymice.permission.engine.PermissionException;
 import com.github.jerrymice.permission.config.PermissionService;
 import com.github.jerrymice.permission.resource.Property;
+import org.springframework.core.io.Resource;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
+import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,10 +54,15 @@ public abstract class AbstractPermissionEngine implements PermissionEngine {
      * 扩展数据.
      */
     private Map<String, Object> extendData;
+    /**
+     * 扩展脚本文件
+     */
+    private List<Resource> extendScriptFile;
 
-    public AbstractPermissionEngine(PermissionService permissionService, boolean mixtureSearch) {
+    public AbstractPermissionEngine(PermissionService permissionService, boolean mixtureSearch,List<Resource> extendScriptFile) {
         this.mixtureSearch = mixtureSearch;
         this.permissionService = permissionService;
+        this.extendScriptFile=extendScriptFile;
         initCommonVariable();
     }
 
@@ -82,6 +90,15 @@ public abstract class AbstractPermissionEngine implements PermissionEngine {
     private void lazyInitScriptEngine() {
         if (engine == null) {
             this.engine = initScriptEngine();
+            try{
+                if(extendScriptFile!=null){
+                    for(Resource resource:extendScriptFile){
+                        this.engine.eval(new InputStreamReader(resource.getInputStream()));
+                    }
+                }
+            }catch (Exception e){
+                throw new PermissionException(e);
+            }
             initScriptVariable();
         }
     }
@@ -181,5 +198,13 @@ public abstract class AbstractPermissionEngine implements PermissionEngine {
     public void put(String name, Object value) {
         lazyInitScriptEngine();
         this.engine.put(name, value);
+    }
+
+    public void setExtendScriptFile(List<Resource> extendScriptFile) {
+        this.extendScriptFile = extendScriptFile;
+    }
+
+    public List<Resource> getsetExtendScriptFile() {
+        return extendScriptFile;
     }
 }

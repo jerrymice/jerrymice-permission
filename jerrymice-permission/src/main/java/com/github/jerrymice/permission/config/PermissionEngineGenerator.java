@@ -24,6 +24,6 @@ public interface PermissionEngineGenerator {
      * @return  返回一个引擎
      */
     default PermissionEngine defaultPermissionEngine(PermissionService permissionLoader, PermissionConfig config) {
-        return new GoogleV8PermissionEngine(permissionLoader, config.isMixtureSearch());
+        return new GoogleV8PermissionEngine(permissionLoader, config.isMixtureSearch(),config.getExtendScriptFile());
     }
 }

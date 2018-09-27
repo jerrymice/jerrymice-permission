@@ -2,8 +2,16 @@ package com.github.jerrymice.permission.engine.support;
 
 import com.github.jerrymice.permission.config.PermissionService;
 import com.github.jerrymice.permission.engine.GoogleV8ScriptEngine;
+import com.github.jerrymice.permission.engine.PermissionException;
+import org.apache.commons.io.IOUtils;
+import org.springframework.core.io.Resource;
 
 import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+import java.io.Reader;
+import java.net.URI;
+import java.net.URL;
+import java.util.List;
 
 /**
  * @author tumingjian
@@ -13,11 +21,11 @@ public class GoogleV8PermissionEngine extends AbstractPermissionEngine {
     private GoogleV8ScriptEngine googleV8ScriptEngine;
 
     public GoogleV8PermissionEngine(PermissionService permissionLoader) {
-        this(permissionLoader, false);
+        this(permissionLoader, false,null);
     }
 
-    public GoogleV8PermissionEngine(PermissionService permissionLoader, boolean mixtureSearch) {
-        super(permissionLoader, mixtureSearch);
+    public GoogleV8PermissionEngine(PermissionService permissionLoader, boolean mixtureSearch,List<Resource> extendScriptFile) {
+        super(permissionLoader, mixtureSearch,extendScriptFile);
     }
 
     @Override
@@ -25,7 +33,6 @@ public class GoogleV8PermissionEngine extends AbstractPermissionEngine {
         this.googleV8ScriptEngine = new GoogleV8ScriptEngine();
         return this.googleV8ScriptEngine;
     }
-
     @Override
     public void release() {
         if(googleV8ScriptEngine!=null){
