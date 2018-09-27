@@ -30,10 +30,6 @@ public class PermissionEngineAdvisor implements PointcutAdvisor, ApplicationCont
      * 通知类的要织入的序号
      */
     private int order;
-    /**
-     * 是否是web环境
-     */
-    private boolean isWebEnv = false;
 
     public PermissionEngineAdvisor() {
         this.pointcut = new PermissionEnginePointCut();
@@ -68,7 +64,6 @@ public class PermissionEngineAdvisor implements PointcutAdvisor, ApplicationCont
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.advice.context = applicationContext;
-        isWebEnv = applicationContext.getBean(DispatcherServlet.class) != null;
     }
 
     public void setPointcut(PermissionEnginePointCut pointcut) {
@@ -97,11 +92,8 @@ public class PermissionEngineAdvisor implements PointcutAdvisor, ApplicationCont
                 PermissionEngineProcessor processor = new PermissionEngineProcessor(invocation, engine, factory.getRejectProcessor());
                 result = processor.process();
             } finally {
-                //如果是web环境
-                if (isWebEnv) {
-                    engine.release();
-                    factory.removeLocalCache();
-                }
+                engine.release();
+                factory.removePermissionEngine(false);
             }
             return result;
         }

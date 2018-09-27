@@ -82,13 +82,14 @@ public class PermissionEngineFactorySupport implements PermissionEngineFactory {
     }
 
     @Override
-    public PermissionEngine removePermissionEngine() {
+    public void removePermissionEngine(boolean store) {
         removeLocalCache();
-        return store.remove(generator.getKey(loader));
+        if(store){
+            this.store.remove(generator.getKey(loader));
+        }
     }
 
-    @Override
-    public void removeLocalCache() {
+    private void removeLocalCache() {
         if (config.isThreadLocalCache()) {
             this.localEngine.remove();
         }

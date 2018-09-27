@@ -15,7 +15,7 @@ import com.github.jerrymice.permission.store.PermissionEngineStore;
 public interface PermissionEngineFactory {
     PermissionEngine getPermissionEngine();
 
-    PermissionEngine removePermissionEngine();
+    void removePermissionEngine(boolean store);
 
     PermissionEngineStore getStore();
 
@@ -26,5 +26,4 @@ public interface PermissionEngineFactory {
     PermissionRejectProcessor getRejectProcessor();
 
     PermissionEngineGenerator getGenerator();
-    void removeLocalCache();
 }
