@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 
 /**
  * @author tumingjian
- * 说明:
+ * 说明:在spring boot 环境下要启用权限控制引擎的注解开关
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
