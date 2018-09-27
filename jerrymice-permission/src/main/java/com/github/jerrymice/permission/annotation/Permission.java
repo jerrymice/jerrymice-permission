@@ -4,8 +4,10 @@ import java.lang.annotation.*;
 
 /**
  * @author tumingjian
+ * 说明: 权限判定注解.用于判定当前用户是否有权限访问有该注解修饰的方法,value值支持普通文本和js表达式
+ * 如果是普通文本,那么将调用PermissionEngine.contain()方法来判断
+ * 如果是js表达式,那么将调用PermissionEngine.bool()方法来判断
  *
- * 说明:
  */
 @Target({ElementType.METHOD,ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
@@ -20,5 +22,9 @@ public @interface Permission {
      */
     String value();
 
+    /**
+     * 注释内容
+     * @return
+     */
     String remark() default "";
 }

@@ -147,12 +147,17 @@ public class PermissionEngineProcessor {
          * 定义JS变量
          */
         String varName = StringUtils.isEmpty(annotation.var()) ? parameter.getName() : annotation.var();
+        String returnVar = annotation.returnVar();
+        if(returnVar.equals("")){
+            returnVar=varName;
+        }
         engine.put(varName, result);
         /**
          * 处理PermissionMeta注解eval
          */
         if (!StringUtils.isEmpty(annotation.eval())) {
-            result = engine.eval(annotation.eval());
+            engine.eval(annotation.eval());
+            result = engine.eval(returnVar);
         }
         /**
          * 将结果转换为方法参数的类型.
@@ -199,8 +204,11 @@ public class PermissionEngineProcessor {
         Object result = beforeResult;
         if (!annotation.ignoreNullValue() || beforeResult != null) {
             String value = annotation.eval();
-            String returnVar = annotation.returnVar();
             String var = annotation.var();
+            String returnVar = annotation.returnVar();
+            if(returnVar.equals("")){
+                returnVar=var;
+            }
             try {
                 engine.put(var, beforeResult);
                 if (!returnVar.equals(var)) {

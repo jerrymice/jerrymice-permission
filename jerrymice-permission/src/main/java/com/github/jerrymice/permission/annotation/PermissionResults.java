@@ -4,8 +4,7 @@ import java.lang.annotation.*;
 
 /**
  * @author tumingjian
- * @date 2018/9/23
- * 说明:
+ * 说明: 一个支持在同一方法上可多次使用PermissionResult注解的注解
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
