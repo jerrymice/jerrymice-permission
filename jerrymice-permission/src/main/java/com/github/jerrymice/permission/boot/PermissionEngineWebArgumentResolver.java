@@ -12,7 +12,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 
 /**
  * @author tumingjian
- *         说明:spring web mvc PermissionEngine参数解析器.
+ *         说明:spring web mvc PermissionEngine参数解析器.能在controller层的方法中自动注入有参数类型为PermissionEngine 的参数值
  */
 public class PermissionEngineWebArgumentResolver implements WebArgumentResolver, ApplicationContextAware{
     private PermissionEngineFactory factory;

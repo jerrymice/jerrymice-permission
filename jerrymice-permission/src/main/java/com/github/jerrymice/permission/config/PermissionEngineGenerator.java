@@ -5,8 +5,9 @@ import com.github.jerrymice.permission.engine.support.GoogleV8PermissionEngine;
 
 /**
  * @author tumingjian
- * @date 2018/9/14
- * 说明:
+ * 说明:  新的PermissionEngine创建者.创建出来的的Permission会被存入到PermissionStore中
+ * @See PermissionStore
+ *
  */
 public interface PermissionEngineGenerator {
     /**
