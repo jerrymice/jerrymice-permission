@@ -17,18 +17,44 @@ import java.lang.reflect.Parameter;
 
 /**
  * @author tumingjian
- * @date 2018/9/23
- * 说明:
+ * 说明:负责处理所有权限相关的注解方法与参数
  */
 public class PermissionEngineProcessor {
+    /**
+     * 处理当前方法权限的Engine
+     */
     private PermissionEngine engine;
+    /**
+     * 当前方法的@Permission数组
+     */
     private Permission[] permissions;
+    /**
+     * 当前方法的@PermissionResult数组
+     */
     private PermissionResult[] permissionResults;
+    /**
+     * 当前方法的AOP拦截对象
+     */
     private MethodInvocation methodInvocation;
+    /**
+     * 当前方法参数
+     */
     private Parameter[] parameters;
+    /**
+     * 当前方法参数的值对象
+     */
     private Object[] arguments;
+    /**
+     * 当前方法的返回值类型
+     */
     private Class<?> returnType;
+    /**
+     * 权限不足时的后续结果处理拦截对象
+     */
     private PermissionRejectProcessor rejectProcessor;
+    /**
+     * json转换.用于将一个结果对象转换为方法的返回值对象
+     */
     private ObjectMapper objectMapper = Jackson2ObjectMapperBuilder.json().build();
 
 
@@ -41,6 +67,22 @@ public class PermissionEngineProcessor {
         this.arguments = methodInvocation.getArguments();
         this.returnType = methodInvocation.getMethod().getReturnType();
         this.rejectProcessor = rejectProcessor;
+    }
+
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
+    public PermissionEngine getEngine() {
+        return engine;
+    }
+
+    public MethodInvocation getMethodInvocation() {
+        return methodInvocation;
+    }
+
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -68,6 +110,10 @@ public class PermissionEngineProcessor {
         return isPermission;
     }
 
+    /**
+     * 循环处理该方法上所有有@PermissionMeta的参数
+     * @return  返回处理后该方法参数的数组
+     */
     protected Object[] methodParameterProcess() {
         Object[] result = this.arguments;
         for (int i = 0; i < parameters.length; i++) {
@@ -81,11 +127,11 @@ public class PermissionEngineProcessor {
     }
 
     /**
-     * 处理单个注解参数
+     * 处理单个PermissionMeta注解参数
      *
      * @param engine     permission引擎
      * @param parameter  当前参数
-     * @param annotation 当前参数上的PersissionMate注解
+     * @param annotation 当前参数上的PermissionMate注解
      * @param value      当前参数的原始值.
      * @return 返回当前参数处理后的新值
      */
@@ -116,8 +162,9 @@ public class PermissionEngineProcessor {
 
 
     /**
-     * @param beforeResult
-     * @return
+     * 循环处理该方法上有一个或多个@PermissionResult的返回值
+     * @param beforeResult  处理前方法的返回值.
+     * @return  返回处理后该方法的返回值
      */
     protected Object eachPermissionResult(Object beforeResult) {
         Object result = beforeResult;
@@ -128,6 +175,12 @@ public class PermissionEngineProcessor {
         return converter(result,beforeResult!=null?beforeResult.getClass():returnType);
     }
 
+    /**
+     * 对象转换
+     * @param result  要转换的对象
+     * @param clazz  要转换的类
+     * @return 转换后的值
+     */
     private Object converter(Object result,Class<?> clazz) {
         if (result != null && !result.getClass().isAssignableFrom(clazz)) {
             return objectMapper.convertValue(result, clazz);
@@ -136,14 +189,20 @@ public class PermissionEngineProcessor {
         }
     }
 
-    private Object permissionResultProcess(PermissionResult annotation, Object body) {
-        Object result = body;
-        if (!annotation.ignoreNullValue() || body != null) {
+    /**
+     * 处理单个 PermissionResult 注解
+     * @param annotation   当前要处理的PermissionResult注解
+     * @param beforeResult 处理前方法的返回值
+     * @return 返回处理后该方法的返回值
+     */
+    private Object permissionResultProcess(PermissionResult annotation, Object beforeResult) {
+        Object result = beforeResult;
+        if (!annotation.ignoreNullValue() || beforeResult != null) {
             String value = annotation.eval();
             String returnVar = annotation.returnVar();
             String var = annotation.var();
             try {
-                engine.put(var, body);
+                engine.put(var, beforeResult);
                 if (!returnVar.equals(var)) {
                     engine.put(returnVar, "{}");
                 }
@@ -156,6 +215,11 @@ public class PermissionEngineProcessor {
         return result;
     }
 
+    /**
+     * 该类的入口方法.负责调用其他方法,来完成对权限,方法参数,和方法结果的检查和控制
+     * @return  返回该方法执行后的结果
+     * @throws Throwable   异常信息
+     */
     public Object process() throws Throwable {
         Method method = methodInvocation.getMethod();
         if (permissions != null) {
@@ -186,15 +250,5 @@ public class PermissionEngineProcessor {
         return result;
     }
 
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
-    }
 
-    public PermissionEngine getEngine() {
-        return engine;
-    }
-
-    public MethodInvocation getMethodInvocation() {
-        return methodInvocation;
-    }
 }

@@ -14,12 +14,20 @@ import java.io.Serializable;
 
 /**
  * @author tumingjian
- * @date 2018/9/23
- * 说明:
+ * 说明:Spring AOP织入者.负责在指定的切入点上织入通知类
  */
 public class PermissionEngineAdvisor implements PointcutAdvisor, ApplicationContextAware, Ordered, Serializable {
+    /**
+     * 切入点
+     */
     private PermissionEnginePointCut pointcut;
+    /**
+     *通知类
+     */
     private PermissionEngineAdvice advice;
+    /**
+     * 通知类的要织入的序号
+     */
     private int order;
 
     public PermissionEngineAdvisor() {
@@ -66,7 +74,7 @@ public class PermissionEngineAdvisor implements PointcutAdvisor, ApplicationCont
     }
 
     /**
-     * advice
+     * Advice通知类的实现类,负责把需要要切入的方法和方法参数交由PermissionEngineProcessor处理
      */
     public class PermissionEngineAdvice implements MethodInterceptor {
         private PermissionEngineFactory factory;
