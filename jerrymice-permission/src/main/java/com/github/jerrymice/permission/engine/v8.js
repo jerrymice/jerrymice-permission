@@ -35,6 +35,33 @@ Object.prototype.delete = function (names) {
     return this;
 }
 /**
+ * 只保留names中存在的属性
+ * @param names
+ */
+Object.prototype.retain = function (names) {
+    if (names instanceof Array) {
+        for (var item in this) {
+            var hasName = false;
+            for (var i = 0; i < names.length; i++) {
+                if (item == names[i]) {
+                    hasName = true;
+                    break;
+                }
+            }
+            if (!hasName) {
+                this[item] = null;
+            }
+        }
+    } else {
+        for (var item in this) {
+            if (item != names) {
+                this[item] = null;
+            }
+        }
+    }
+    return this;
+}
+/**
  * 取两个数组的交集
  * @param args
  */

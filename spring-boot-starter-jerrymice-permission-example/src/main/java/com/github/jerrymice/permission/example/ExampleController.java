@@ -124,12 +124,12 @@ public class ExampleController {
 
     /**
      * 更高级的参数控制和结果集控制
-     * 1.@PermissionMeta(var = "paramStatus",defaultValue = "E.status",eval = "paramStatus.filter(i=>i>1003)")
+     * 1.@PermissionMeta(defaultValue = "E.status",eval = "status.intersect(E['status'])")
      * var:在JS中定义一个paramsStatus的变量名,如果未指定将定义一个status的变量名,
      * defaultValue:如果前台未传值,那么取默认值E.status
      * eval: 取paramStatus大于1003的值并赋值给status,
      * <p>
-     * 2.@PermissionResult(var = "result",eval = "result.object.status.removes(i=>i>1004);result.object.data.each(i=>i.delete(['amount','ordernum']))",returnVar = "result")
+     * 2.@PermissionResult(var = "result",eval = "result.object.data.each(i=>i.delete(E.selectColumn))",returnVar = "result")
      * var:在JS中定义一个变量,变量名为result,value值是当前接口的返回值
      * eval:过滤status和data
      * result: 要返回的结果变量.
@@ -139,7 +139,7 @@ public class ExampleController {
     @RequestMapping("/api/example/select")
     @ResponseBody
     @Permission("R1001")
-    @PermissionResult(var = "result", eval = "result.object.data.each(i=>i.delete(['amount','ordernum']))", returnVar = "result")
+    @PermissionResult(var = "result", eval = "result.object.data.each(i=>i.delete(E.selectColumn))", returnVar = "result")
     public Result select(String ab,@PermissionMeta(defaultValue = "E.status", eval = "status.intersect(E['status'])") Integer[] status, @PermissionMeta(defaultValue = "P.U.admin.id") String id,String ddd) {
         ResultInfo<Object> result = new ResultInfo<>(true);
         HashMap<String, Object> map = new HashMap<>(1);

@@ -46,6 +46,7 @@ public class PermissionLoaderExample implements PermissionService {
         map.put("特权类型",2);
         map.put("audit",true);
         map.put("status",new int[]{1000,1001,1002,1003,1004,1005});
+        map.put("selectColumn",new String[]{"amount","ordernum"});
         return map;
     }
 }
