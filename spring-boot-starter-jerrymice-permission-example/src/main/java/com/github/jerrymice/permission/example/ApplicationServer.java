@@ -10,7 +10,6 @@ import org.springframework.context.annotation.ComponentScan;
  * @date 2018/9/14
  * 说明:
  */
-@ComponentScan("com.github.jerrymice.permission.example")
 @EnabledJerryMicePermission
 @SpringBootApplication
 public class ApplicationServer {

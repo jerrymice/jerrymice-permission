@@ -17,7 +17,9 @@ public interface PermissionService extends Serializable {
     Set<Property> loadCharacters();
 
     Property loadUser();
-
+    default Set<Property> loadMetadata(){
+        return null;
+    }
     default Map<String, Object> loadExtendData() {
         return null;
     }

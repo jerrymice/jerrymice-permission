@@ -1,5 +1,6 @@
 package com.github.jerrymice.permission.example;
 
+import com.github.jerrymice.permission.annotation.Permission;
 import com.github.jerrymice.permission.config.PermissionService;
 import com.github.jerrymice.permission.resource.Character;
 import com.github.jerrymice.permission.resource.Property;
@@ -27,7 +28,6 @@ public class PermissionLoaderExample implements PermissionService {
         Collections.addAll(resources, new Resource("R1001","查询"), new Resource("R1002","编辑"), new Resource("R1003","删除"));
         return resources;
     }
-
     @Override
     public Set<Property> loadCharacters() {
         HashSet<Property> characters = new HashSet<>();

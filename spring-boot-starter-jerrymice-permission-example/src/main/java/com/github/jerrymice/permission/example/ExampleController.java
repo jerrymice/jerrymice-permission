@@ -44,7 +44,6 @@ public class ExampleController {
         ResultInfo result = new ResultInfo(true).setMessage("呵呵");
         return result;
     }
-
     @RequestMapping("/api/example/query")
     @ResponseBody
     @Permission("R1001")

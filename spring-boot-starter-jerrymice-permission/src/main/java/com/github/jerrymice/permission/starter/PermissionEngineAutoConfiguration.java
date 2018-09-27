@@ -12,7 +12,6 @@ import com.github.jerrymice.permission.advisor.PermissionEngineAdvisor;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -39,6 +38,7 @@ import java.util.List;
 public class PermissionEngineAutoConfiguration {
     @Autowired
     private JerryMicePermissionProperties permissionProperties;
+
     @Bean
     @ConditionalOnMissingBean(RequestContextListener.class)
     public RequestContextListener requestContextListener() {
@@ -57,6 +57,7 @@ public class PermissionEngineAutoConfiguration {
             return session;
         }
     }
+
     @Bean
     @ConditionalOnMissingBean(PermissionEngineFactory.class)
     public PermissionEngineFactory permissionFactory(
@@ -64,7 +65,11 @@ public class PermissionEngineAutoConfiguration {
             PermissionEngineGenerator storeKeyGenerator,
             @Autowired(required = false) PermissionRejectProcessor processor) {
         WebPermissionEngineFactory webPermissionEngineFactory = new WebPermissionEngineFactory();
-        webPermissionEngineFactory.setConfig(new PermissionConfig().setMixtureSearch(permissionProperties.isMixtureSearch()));
+        PermissionConfig permissionConfig = new PermissionConfig().setMixtureSearch(permissionProperties
+                .isMixtureSearch())
+                .setThreadLocalCache(permissionProperties.isThreadLocalCache());
+        webPermissionEngineFactory.setConfig(permissionConfig);
+
         webPermissionEngineFactory.setGenerator(storeKeyGenerator);
         webPermissionEngineFactory.setLoader(loader);
         if (processor != null) {
@@ -80,21 +85,20 @@ public class PermissionEngineAutoConfiguration {
     }
 
     @Bean
-    public PermissionEngineWebArgumentResolver permissionEngineWebArgumentResolver(){
+    public PermissionEngineWebArgumentResolver permissionEngineWebArgumentResolver() {
         return new PermissionEngineWebArgumentResolver();
     }
 
     @Configuration
-    public class PermissionWebMvcConfigurer implements WebMvcConfigurer{
+    public class PermissionWebMvcConfigurer implements WebMvcConfigurer {
         @Autowired
         private PermissionEngineWebArgumentResolver resolver;
+
         @Override
         public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
             resolvers.add(new ServletWebArgumentResolverAdapter(resolver));
         }
     }
-
-
 
 
 }

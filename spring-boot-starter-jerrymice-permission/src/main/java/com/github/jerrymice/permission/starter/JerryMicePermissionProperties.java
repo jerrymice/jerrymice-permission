@@ -15,5 +15,6 @@ import org.springframework.context.annotation.Configuration;
 public class JerryMicePermissionProperties {
     private boolean enabled = true;
     private boolean mixtureSearch = false;
+    private boolean threadLocalCache = true;
     private String usernameSessionKey = "currentUsername";
 }
