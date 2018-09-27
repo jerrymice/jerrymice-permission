@@ -4,8 +4,7 @@ import lombok.Data;
 
 /**
  * @author tumingjian
- * @date 2018/9/17
- * 说明:
+ * 说明:用户实体
  */
 public class User implements Property {
     protected String code;

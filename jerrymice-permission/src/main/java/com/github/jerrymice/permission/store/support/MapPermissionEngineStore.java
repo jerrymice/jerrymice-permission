@@ -7,8 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author tumingjian
- * @date 2018/9/14
- * 说明:
+ * 说明:  普通的map存取器.这是一个线程安全的存取器
  */
 public class MapPermissionEngineStore implements PermissionEngineStore<String> {
     private ConcurrentHashMap<String,PermissionEngine> context=new ConcurrentHashMap<>();

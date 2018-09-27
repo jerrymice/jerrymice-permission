@@ -7,8 +7,7 @@ import javax.script.ScriptEngine;
 
 /**
  * @author tumingjian
- * @date 2018/9/19
- * 说明:
+ * 说明:google v8 js脚本引擎类,实现了抽象方法.initScriptEngine,release
  */
 public class GoogleV8PermissionEngine extends AbstractPermissionEngine {
     private GoogleV8ScriptEngine googleV8ScriptEngine;

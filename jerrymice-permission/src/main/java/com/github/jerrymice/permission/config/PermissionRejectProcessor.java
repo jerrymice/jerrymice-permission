@@ -4,7 +4,7 @@ import com.github.jerrymice.permission.engine.PermissionEngine;
 
 /**
  * @author tumingjian
- * 说明:权限不足时的拒绝处理方法
+ * 说明:权限不足时的返回信息处理者
  */
 @FunctionalInterface
 public interface PermissionRejectProcessor {

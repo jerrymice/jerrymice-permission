@@ -5,7 +5,7 @@ import com.github.jerrymice.permission.config.PermissionEngineGenerator;
 import com.github.jerrymice.permission.engine.PermissionEngine;
 import com.github.jerrymice.permission.resource.Property;
 import com.github.jerrymice.permission.store.PermissionEngineStore;
-import com.github.jerrymice.permission.store.PermissionStoreDataWapper;
+import com.github.jerrymice.permission.store.PermissionServiceAdapter;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;
@@ -13,8 +13,7 @@ import java.util.Set;
 
 /**
  * @author tumingjian
- * @date 2018/9/14
- * 说明:
+ * 说明:http session store.  能够从httpsession中获取权限引擎相关的数据
  */
 public class HttpSessionPermissionEngineStore implements PermissionEngineStore<HttpSession> {
     private String sessionKey = "__permission_engine_store_data__";
@@ -34,8 +33,8 @@ public class HttpSessionPermissionEngineStore implements PermissionEngineStore<H
 
     @Override
     public PermissionEngine get(HttpSession session) {
-        PermissionStoreDataWapper attribute = (PermissionStoreDataWapper)session.getAttribute(sessionKey);
-        if(attribute!=null && session.getAttribute(sessionKey) instanceof PermissionStoreDataWapper){
+        PermissionServiceAdapter attribute = (PermissionServiceAdapter)session.getAttribute(sessionKey);
+        if(attribute!=null && session.getAttribute(sessionKey) instanceof PermissionServiceAdapter){
             PermissionEngine engine = generator.defaultPermissionEngine(attribute, config);
             return engine;
         }
@@ -48,8 +47,8 @@ public class HttpSessionPermissionEngineStore implements PermissionEngineStore<H
         Set<Property> characters = engine.characters();
         Set<Property> resources = engine.resources();
         Map<String, Object> map = engine.extendData();
-        PermissionStoreDataWapper permissionStoreDataWapper = new PermissionStoreDataWapper(user.size()>0?user.iterator().next():null, characters, resources, map);
-        session.setAttribute(sessionKey, permissionStoreDataWapper);
+        PermissionServiceAdapter permissionServiceAdapter = new PermissionServiceAdapter(user.size()>0?user.iterator().next():null, characters, resources, map);
+        session.setAttribute(sessionKey, permissionServiceAdapter);
     }
 
     @Override
@@ -61,6 +60,6 @@ public class HttpSessionPermissionEngineStore implements PermissionEngineStore<H
 
     @Override
     public boolean contain(HttpSession session) {
-        return session.getAttribute(sessionKey) != null && session.getAttribute(sessionKey) instanceof PermissionStoreDataWapper;
+        return session.getAttribute(sessionKey) != null && session.getAttribute(sessionKey) instanceof PermissionServiceAdapter;
     }
 }

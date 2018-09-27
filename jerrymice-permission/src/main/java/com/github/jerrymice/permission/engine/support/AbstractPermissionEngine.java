@@ -12,39 +12,68 @@ import java.util.stream.Collectors;
 
 /**
  * @author tumingjian
- * @date 2018/9/14
- * 说明:
+ * 说明:permission抽象类.用于eval,contain等方法
  */
 public abstract class AbstractPermissionEngine implements PermissionEngine {
-    protected PermissionService permissionLoader;
+    /**
+     * 用户权限相关的数据载入
+     */
+    protected PermissionService permissionService;
+    /**
+     * 是否启用全局搜索
+     */
     protected boolean mixtureSearch = false;
+    /**
+     * 当前用户信息在JS中的变量名
+     */
     protected final String USER_VARIABLE_NAME = "U";
+    /**
+     * 当前角色列表在JS中的变量名
+     */
     protected final String CHARACTERS_VARIABLE_NAME = "C";
+    /**
+     * 当前用户资源在JS中的变量名
+     */
     protected final String RESOURCES_VARIABLE_NAME = "R";
+    /**
+     * JS中未定义变量的值
+     */
     private final String JAVA_SCRIPT_UNDEFINED = "undefined";
+    /**
+     * 执行脚本引擎
+     */
     protected ScriptEngine engine;
+    /**
+     * 通用的数据,主要存储当前用户,角色列表,资源列表信息
+     */
     private Map<String, Map<String, Property>> commonVariable = new HashMap<>();
+    /**
+     * 扩展数据.
+     */
     private Map<String, Object> extendData;
 
-    public AbstractPermissionEngine(PermissionService permissionLoader, boolean mixtureSearch) {
+    public AbstractPermissionEngine(PermissionService permissionService, boolean mixtureSearch) {
         this.mixtureSearch = mixtureSearch;
-        this.permissionLoader = permissionLoader;
+        this.permissionService = permissionService;
         initCommonVariable();
     }
 
+    /**
+     * 初始用户权限数据
+     */
     protected void initCommonVariable() {
         HashSet<Property> users = new HashSet<>();
         Property user;
-        if ((user = this.permissionLoader.loadUser()) != null) {
+        if ((user = this.permissionService.loadUser()) != null) {
             users.add(user);
         }
         Map<String, Property> userMap = converterCode(users);
         commonVariable.put(USER_VARIABLE_NAME, userMap);
-        Map<String, Property> characterMap = converterCode(this.permissionLoader.loadCharacters());
+        Map<String, Property> characterMap = converterCode(this.permissionService.loadCharacters());
         commonVariable.put(CHARACTERS_VARIABLE_NAME, characterMap);
-        Map<String, Property> resourceMap = converterCode(this.permissionLoader.loadResources());
+        Map<String, Property> resourceMap = converterCode(this.permissionService.loadResources());
         commonVariable.put(RESOURCES_VARIABLE_NAME, resourceMap);
-        extendData = this.permissionLoader.loadExtendData();
+        extendData = this.permissionService.loadExtendData();
     }
 
     /**
@@ -76,7 +105,11 @@ public abstract class AbstractPermissionEngine implements PermissionEngine {
         }
     }
 
-
+    /**
+     * 将set 转换为 以Property.code为Key,Property为value的map
+     * @param list
+     * @return
+     */
     private Map<String, Property> converterCode(Set<Property> list) {
         Map<String, Property> collect = Optional.ofNullable(list).orElseGet(HashSet::new).stream()
                 .collect(Collectors.toMap(i -> i.getCode(), i -> i));

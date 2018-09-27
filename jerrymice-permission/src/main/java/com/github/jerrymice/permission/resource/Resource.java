@@ -2,10 +2,9 @@ package com.github.jerrymice.permission.resource;
 
 /**
  * @author tumingjian
- * @date 2018/9/17
- * 说明:
+ * 说明:用户资源实体
  */
-public class Resource implements Property,Classify{
+public class Resource implements Property{
     protected String code;
     protected String name;
     protected Integer type=0;
@@ -40,11 +39,6 @@ public class Resource implements Property,Classify{
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public Integer getType() {
-        return type;
     }
 
     public void setType(Integer type) {

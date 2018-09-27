@@ -6,8 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author tumingjian
- * @date 2018/9/14
- * 说明:
+ * 说明:  将当前request信息放入 PermissionEngineRequestContextHolder 的threadlocal中
  */
 public class PermissionEngineHttpReqeustContextListener implements ServletRequestListener {
     @Override

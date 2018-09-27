@@ -6,8 +6,7 @@ import javax.servlet.http.HttpSession;
 
 /**
  * @author tumingjian
- * @date 2018/9/14
- * 说明:
+ * 说明: 一个将当前request 存入到threadlocal中的类
  */
 public class PermissionEngineRequestContextHolder {
     private static final ThreadLocal<HttpServletRequest> currentRequest = new ThreadLocal<>();

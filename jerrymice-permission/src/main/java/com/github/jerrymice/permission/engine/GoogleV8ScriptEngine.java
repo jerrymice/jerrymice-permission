@@ -16,8 +16,7 @@ import java.net.URL;
 
 /**
  * @author tumingjian
- * @date 2018/9/19
- * 说明:
+ * 说明:google v8 js engine 转换为java ScriptEngine接口的类,实现其对ScriptContext,和eval等方法的支持
  */
 @Slf4j
 public class GoogleV8ScriptEngine extends AbstractScriptEngine {

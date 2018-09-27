@@ -7,8 +7,7 @@ import java.util.Set;
 
 /**
  * @author tumingjian
- * @date 2018/9/13
- * 说明:
+ * 说明:权限脚本引擎接口类.
  */
 public interface PermissionEngine {
     String EXTEND_VARIABLE_NAME="E";

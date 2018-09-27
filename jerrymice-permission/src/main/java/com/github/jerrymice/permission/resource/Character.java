@@ -2,8 +2,7 @@ package com.github.jerrymice.permission.resource;
 
 /**
  * @author tumingjian
- * @date 2018/9/17
- * 说明:
+ * 说明: 当前角色信息实现类
  */
 public class Character implements Property {
     protected String code;

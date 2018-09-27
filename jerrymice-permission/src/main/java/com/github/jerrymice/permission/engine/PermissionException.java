@@ -2,8 +2,7 @@ package com.github.jerrymice.permission.engine;
 
 /**
  * @author tumingjian
- * @date 2018/9/13
- * 说明:
+ * 说明:普通异常包装类
  */
 public class PermissionException extends RuntimeException {
     public PermissionException(Throwable cause) {

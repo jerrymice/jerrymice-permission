@@ -9,8 +9,7 @@ import java.lang.reflect.Method;
 
 /**
  * @author tumingjian
- * @date 2018/9/23
- * 说明:
+ * 说明:Permission注解获取工具类
  */
 public class AnnotationUtils {
     /**

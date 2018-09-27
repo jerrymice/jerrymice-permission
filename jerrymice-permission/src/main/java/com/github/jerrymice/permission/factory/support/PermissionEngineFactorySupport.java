@@ -13,22 +13,41 @@ import java.util.Set;
 
 /**
  * @author tumingjian
- * @date 2018/9/14
- * 说明:
+ * 说明: 权限脚本引擎工厂类.负责缓存,从store中存取,移除脚本引擎
  */
 public class PermissionEngineFactorySupport implements PermissionEngineFactory {
-
-    private PermissionService loader;
+    /**
+     * 初始化用户权限相关信息的类
+     */
+    private PermissionService permissionService;
+    /**
+     * 权限管理全局配置类
+     */
     private PermissionConfig config;
+    /**
+     * 权限不足时的返回信息处理者
+     */
     private PermissionRejectProcessor rejectProcessor;
+    /**
+     * 权限脚本引擎生成者
+     */
     private PermissionEngineGenerator generator;
+    /**
+     * 权限脚本引擎存取仓库
+     */
     private PermissionEngineStore store;
+    /**
+     * 权限脚本引擎的线程缓存存取变量
+     */
     private ThreadLocal<PermissionEngine> localEngine = new ThreadLocal<>();
 
     public PermissionEngineFactorySupport() {
         initDefaultConfig();
     }
 
+    /**
+     * 默认的store key生成器.直接以用户名作为key
+     */
     public class UsernameGenerator implements PermissionEngineGenerator {
         @Override
         public Object getKey(PermissionService permissionLoader) {
@@ -36,6 +55,9 @@ public class PermissionEngineFactorySupport implements PermissionEngineFactory {
         }
     }
 
+    /**
+     * 默认的权限不足时的返回信息处理器.
+     */
     public class DefaultPermissionRejectProcessor implements PermissionRejectProcessor {
         @Override
         public Object rejectProcess(PermissionEngine permissionEngine) {
@@ -48,8 +70,11 @@ public class PermissionEngineFactorySupport implements PermissionEngineFactory {
         }
     }
 
+    /**
+     * 如果没有指定factory的一些属性配置,那么初始化一份默认的属性配置
+     */
     protected void initDefaultConfig() {
-        this.config = new PermissionConfig().setMixtureSearch(true);
+        this.config = new PermissionConfig().setMixtureSearch(false).setThreadLocalCache(true);
         rejectProcessor = new DefaultPermissionRejectProcessor();
         generator = new UsernameGenerator();
         store = new MapPermissionEngineStore();
@@ -63,32 +88,39 @@ public class PermissionEngineFactorySupport implements PermissionEngineFactory {
                 return engine;
             }
         }
-        Object key = generator.getKey(loader);
+        Object key = generator.getKey(permissionService);
         PermissionEngine cacheEngine = store.get(key);
         if (cacheEngine != null) {
             return cacheThreadLocal(cacheEngine);
         } else {
-            PermissionEngine permissionEngine = generator.defaultPermissionEngine(loader, config);
+            PermissionEngine permissionEngine = generator.defaultPermissionEngine(permissionService, config);
             store.put(key, permissionEngine);
             return cacheThreadLocal(permissionEngine);
         }
     }
 
+    /**
+     * 缓存当前引擎到ThreadLocal中
+     * @param engine
+     * @return
+     */
     private PermissionEngine cacheThreadLocal(PermissionEngine engine) {
         if (config.isThreadLocalCache()) {
             localEngine.set(engine);
         }
         return engine;
     }
-
     @Override
     public void removePermissionEngine(boolean store) {
         removeLocalCache();
         if(store){
-            this.store.remove(generator.getKey(loader));
+            this.store.remove(generator.getKey(permissionService));
         }
     }
 
+    /**
+     * 移除ThreadLocal中的当前引擎
+     */
     private void removeLocalCache() {
         if (config.isThreadLocalCache()) {
             this.localEngine.remove();
@@ -104,13 +136,12 @@ public class PermissionEngineFactorySupport implements PermissionEngineFactory {
         this.store = store;
     }
 
-    @Override
-    public PermissionService getLoader() {
-        return loader;
+    public PermissionService getPermissionService() {
+        return permissionService;
     }
 
-    public void setLoader(PermissionService loader) {
-        this.loader = loader;
+    public void setPermissionService(PermissionService permissionService) {
+        this.permissionService = permissionService;
     }
 
     @Override
