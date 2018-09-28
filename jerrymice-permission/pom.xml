@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jerrymice-permission</artifactId>
-    <name>jerrymice-permission-project</name>
+    <version>1.0.0.bate1-SNAPSHOT</version>
     <dependencies>
         <dependency>
             <groupId>com.github.jerrymice.common</groupId>
