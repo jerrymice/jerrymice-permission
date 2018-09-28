@@ -8,7 +8,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <packaging>jar</packaging>
     <artifactId>spring-boot-starter-jerrymice-permission-example</artifactId>
     <dependencies>
         <dependency>
@@ -25,4 +25,15 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.github.jerrymice.permission.example.ApplicationServer</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
