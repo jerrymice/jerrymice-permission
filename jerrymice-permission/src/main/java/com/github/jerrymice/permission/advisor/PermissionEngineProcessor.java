@@ -7,16 +7,12 @@ import com.github.jerrymice.permission.annotation.PermissionResult;
 import com.github.jerrymice.permission.config.PermissionRejectProcessor;
 import com.github.jerrymice.permission.engine.PermissionEngine;
 import com.github.jerrymice.permission.engine.PermissionException;
-import com.github.jerrymice.permission.util.AnnotationUtils;
 import org.aopalliance.intercept.MethodInvocation;
-import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.StringUtils;
 
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.lang.reflect.TypeVariable;
 
 /**
  * @author tumingjian

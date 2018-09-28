@@ -2,15 +2,9 @@ package com.github.jerrymice.permission.engine.support;
 
 import com.github.jerrymice.permission.config.PermissionService;
 import com.github.jerrymice.permission.engine.GoogleV8ScriptEngine;
-import com.github.jerrymice.permission.engine.PermissionException;
-import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-import java.io.Reader;
-import java.net.URI;
-import java.net.URL;
 import java.util.List;
 
 /**

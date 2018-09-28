@@ -30,6 +30,7 @@ public class GoogleV8ScriptEngine extends AbstractScriptEngine {
 
     public GoogleV8ScriptEngine(boolean disabledUndefinedException) {
         this.disabledUndefinedException = disabledUndefinedException;
+        URL currentPackage = this.getClass().getResource("");
         this.engine = V8.createV8Runtime();
         try {
             URL resource = GoogleV8ScriptEngine.class.getResource(FILE_NAME);
