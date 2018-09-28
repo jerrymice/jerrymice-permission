@@ -2,6 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.github.jerrymice.common</groupId>
+        <artifactId>common-pom</artifactId>
+        <version>0.0.2</version>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.jerrymice</groupId>
     <artifactId>jerrymice-permission-project</artifactId>
@@ -39,11 +44,7 @@
         <module>spring-boot-starter-jerrymice-permission-example</module>
         <module>spring-boot-starter-jerrymice-permission-test</module>
     </modules>
-    <parent>
-        <groupId>com.github.jerrymice.common</groupId>
-        <artifactId>common-pom</artifactId>
-        <version>0.0.2</version>
-    </parent>
+
     <dependencies>
         <dependency>
             <groupId>org.aspectj</groupId>
