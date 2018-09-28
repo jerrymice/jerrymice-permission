@@ -52,14 +52,16 @@ public class LibraryLoader {
         String ideLocation = System.getProperty("user.dir") + SEPARATOR + "jni" + SEPARATOR + computeLibraryFullName();
         String path = null;
         /**
-         * 新增代码
+         * 新增代码,为加载的本地库文件指定目录
          */
         URL currentPackage = GoogleV8ScriptEngine.class.getResource("lib");
         /* Try loading library from java library path */
         if (load(currentPackage.getPath() + SEPARATOR + libFullName, message)) {
             return;
         }
-
+        /**
+         *新增代码结束
+         */
         /* Try loading library from the IDE location */
         if (new File(ideLocation).exists()) {
             if (load(ideLocation, message)) {
