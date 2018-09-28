@@ -18,11 +18,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+/**
+ * 重写了LibraryLoader
+ * 1.添加了在不同平台下载入不同类的本地类库
+ * 2.添加了loaded标记,不会多次重复载入本地库
+ */
 public class LibraryLoader {
 
     static final String SEPARATOR;
     static final String DELIMITER;
-
+    static volatile boolean loaded = false;
     static final String SWT_LIB_DIR = ".j2v8";
 
     static {
@@ -42,6 +47,9 @@ public class LibraryLoader {
     }
 
     static void loadLibrary(final String tempDirectory) {
+        if(loaded){
+            return;
+        }
         if (isAndroid()) {
             System.loadLibrary("j2v8");
             return;
@@ -90,6 +98,7 @@ public class LibraryLoader {
             } else {
                 System.loadLibrary(libName);
             }
+            loaded=true;
             return true;
         } catch (UnsatisfiedLinkError e) {
             if (message.length() == 0) {
@@ -111,7 +120,7 @@ public class LibraryLoader {
             if (file.exists()) {
                 file.delete();
             }
-            is = LibraryLoader.class.getResourceAsStream("/" + mappedName); //$NON-NLS-1$
+            is = GoogleV8ScriptEngine.class.getResourceAsStream("lib/" + mappedName); //$NON-NLS-1$
             if (is != null) {
                 extracted = true;
                 int read;
