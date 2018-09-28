@@ -11,7 +11,7 @@
     <groupId>com.github.jerrymice</groupId>
     <artifactId>jerrymice-permission-project</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.bate1-SNAPSHOT</version>
     <name>comm.github.jerrymice.jerrymice-permission</name>
     <description>这一个基于spring aop的细粒度权限控制框架</description>
     <url>https://github.com/jerrymice/jerrymice-permission</url>
