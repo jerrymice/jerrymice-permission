@@ -9,7 +9,7 @@
     <groupId>com.github.jerrymice</groupId>
     <artifactId>jerrymice-permission-project</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0.beta1</version>
+    <version>1.0.0.beta2-SNAPSHOT</version>
     <name>comm.github.jerrymice.jerrymice-permission</name>
     <description>这一个基于spring aop的细粒度权限控制框架</description>
     <url>https://github.com/jerrymice/jerrymice-permission</url>
@@ -34,7 +34,7 @@
         <url>http://github.com/jerrymice/jerrymice-permission</url>
         <connection>scm:git:ssh://github.com/jerrymice/jerrymice-permission</connection>
         <developerConnection>scm:git:ssh://git@github.com/jerrymice/jerrymice-permission.git</developerConnection>
-        <tag>jerrymice-permission-project.1.0.0.beta1</tag>
+        <tag>HEAD</tag>
     </scm>
     <modules>
         <module>jerrymice-permission</module>
