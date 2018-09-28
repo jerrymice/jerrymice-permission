@@ -14,19 +14,28 @@ import java.util.*;
 
 /**
  * @author tumingjian
- * @date 2018/9/14
  * 说明:
  */
 @Component
 public class PermissionLoaderExample implements PermissionService {
     @Autowired
     private HttpSession httpSession;
+
+    /**
+     * 当前用户所拥有的资源列表
+     * @return
+     */
     @Override
     public Set<Property> loadResources() {
         HashSet<Property> resources = new HashSet<>();
         Collections.addAll(resources, new Resource("R1001","查询"), new Resource("R1002","编辑"), new Resource("R1003","删除"));
         return resources;
     }
+
+    /**
+     * 当前用户所拥有的角色列表
+     * @return
+     */
     @Override
     public Set<Property> loadCharacters() {
         HashSet<Property> characters = new HashSet<>();
@@ -34,12 +43,20 @@ public class PermissionLoaderExample implements PermissionService {
         return characters;
     }
 
+    /**
+     * 当前用户信息
+     * @return
+     */
     @Override
     public Property loadUser() {
         Property currentUser=(Property)httpSession.getAttribute("currentUser");
         return currentUser;
     }
 
+    /**
+     * 扩展数据
+     * @return
+     */
     @Override
     public Map<String, Object> loadExtendData() {
         HashMap<String, Object> map = new HashMap<>(2);

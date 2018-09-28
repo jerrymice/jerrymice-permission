@@ -43,6 +43,12 @@ public class ExampleController {
         ResultInfo result = new ResultInfo(true).setMessage("呵呵");
         return result;
     }
+
+    /**
+     * 用户必须拥有编号为R1001的查询资源权限,才能访问该接口
+     *
+     * @return
+     */
     @RequestMapping("/api/example/query")
     @ResponseBody
     @Permission("R1001")
@@ -50,6 +56,11 @@ public class ExampleController {
         return new ResultInfo<>(true).setObject("查询结果");
     }
 
+    /**
+     * 用户必须拥有编号为R1002的编辑资源权限,才能访问该接口
+     *
+     * @return
+     */
     @RequestMapping("/api/example/edit")
     @ResponseBody
     @Permission("R1002")
@@ -57,6 +68,11 @@ public class ExampleController {
         return new ResultInfo<>(true).setObject("编辑结果");
     }
 
+    /**
+     * 用户必须拥有编号为R1003的下载资源权限,才能访问该接口
+     *
+     * @return
+     */
     @RequestMapping("/api/example/download")
     @ResponseBody
     @Permission("R1003")
@@ -65,7 +81,7 @@ public class ExampleController {
     }
 
     /**
-     * 用户角色为管理员且用户拥有资源权限且用户名为admin的用户有权访问,或者用户名为administrator的用户有权访问
+     * 用户必须拥有编号为R1004的删除资源权限,才能访问该接口
      *
      * @return
      */
@@ -77,7 +93,7 @@ public class ExampleController {
     }
 
     /**
-     * 用户必须拥有资源编辑,查询,下载三个功能才能访问该接口
+     * 用户必须拥有资源查询,编辑,下载三个功能才能访问该接口
      *
      * @return
      */
@@ -90,7 +106,8 @@ public class ExampleController {
 
 
     /**
-     * 第一个注解,与第二个和第三个等价. 用户角色为管理员且用户拥有删除资源权限且用户名为admin的用户有权访问,或者用户名为administrator的用户有权访问
+     * 或条件 可以拆分为多个注解.
+     * 第一个注解,与(第二个和第三个等价). 用户角色为管理员且用户拥有删除资源权限且用户名为admin的用户有权访问,或者用户名为administrator的用户有权访问
      * 可以根据自己的情况拆分.
      *
      * @return
@@ -109,6 +126,7 @@ public class ExampleController {
 
 
     /**
+     * 或条件 可以拆分为多个注解
      * 用户必须有查询资源权限,且特权类型==2,或者用户名为test的用户可以访问
      *
      * @return
@@ -124,22 +142,23 @@ public class ExampleController {
     /**
      * 更高级的参数控制和结果集控制
      * 1.@PermissionMeta(defaultValue = "E.status",eval = "status.intersect(E['status'])")
-     * var:在JS中定义一个paramsStatus的变量名,如果未指定将定义一个status的变量名,
-     * defaultValue:如果前台未传值,那么取默认值E.status
-     * eval: 取paramStatus大于1003的值并赋值给status,
+     * 属性var:在JS中定义一个变量名,如果未指定将定义一个与java方法参数名相同的JS变量名(这里为status),
+     * 属性defaultValue:如果前台传入的值为Null,那么取默认值E.status
+     * eval: 取E.status与status两个数组的交集.作为参数结果.可以理解为过滤掉status参数中权限不足的数组元素.
+     * 属性resultVar: 要返回的结果变量.如果resultVar的值为空,那么默认为变量名java方法的参数名(这里为status)
      * <p>
-     * 2.@PermissionResult(var = "result",eval = "result.object.data.each(i=>i.delete(E.selectColumn))",returnVar = "result")
-     * var:在JS中定义一个变量,变量名为result,value值是当前接口的返回值
-     * eval:过滤status和data
-     * result: 要返回的结果变量.
+     * 2.@PermissionResult(eval = "result.object.data.each(i=>i.delete(E.selectColumn))")
+     * 属性var:在JS中定义一个变量,value值是当前接口的返回值,如果var的值为空,那么默认为变量名为result
+     * 属性eval:在result.object.data中删除E.selectColumn数组元素中存在的列.
+     * 属性resultVar: 要返回的结果变量.如果resultVar的值为空,那么默认为变量名result
      *
      * @return
      */
     @RequestMapping("/api/example/select")
     @ResponseBody
     @Permission("R1001")
-    @PermissionResult(var = "result", eval = "result.object.data.each(i=>i.delete(E.selectColumn))", returnVar = "result")
-    public Result select(String ab,@PermissionMeta(defaultValue = "E.status", eval = "status.intersect(E['status'])") Integer[] status, @PermissionMeta(defaultValue = "P.U.admin.id") String id,String ddd) {
+    @PermissionResult(eval = "result.object.data.each(i=>i.delete(E.selectColumn))")
+    public Result select(String ab, @PermissionMeta(defaultValue = "E.status", eval = "status.intersect(E['status'])") Integer[] status, @PermissionMeta(defaultValue = "P.U.admin.id") String id, String ddd) {
         ResultInfo<Object> result = new ResultInfo<>(true);
         HashMap<String, Object> map = new HashMap<>(1);
         List<QueryResult> data = new ArrayList<>();
@@ -157,42 +176,43 @@ public class ExampleController {
     }
 
     /**
-     * @param engine
+     * API操作
+     *
+     * @param engine 当前用户所拥有的权限引擎.
      * @return
      */
     @RequestMapping("/api/example/page")
     @ResponseBody
-    public Result page(PermissionEngine engine,@PermissionMeta(var = "paramsStatus") Integer[] status) {
+    public Result page(PermissionEngine engine, @PermissionMeta(defaultValue = "E.status") Integer[] status) {
         ResultInfo<Object> result = new ResultInfo<>(true);
         /**
          * 判断用户是否有权访问该接口
          */
         boolean permission = engine.contain("R1001");
         if (permission) {
-            System.out.println("第二次:"+engine);
-            boolean bool = engine.bool("paramsStatus.filter(i=>i>300).length>0");
-
+            System.out.println("第二次:" + engine);
             /**
-             * 验证用户的参数是否超出权限范围
+             * 用JS表达式验证用户的参数是否超出权限范围
              */
-            if(bool){
-            HashMap<String, Object> map = new HashMap<>(1);
-            List<QueryResult> data = new ArrayList<>();
-            data.add(new QueryResult().setId("10").setAmount("100").setOrdernum("num1").setStatus("100"));
-            data.add(new QueryResult().setId("20").setAmount("200").setOrdernum("num2").setStatus("200"));
-            data.add(new QueryResult().setId("30").setAmount("300").setOrdernum("num3").setStatus("300"));
-            data.add(new QueryResult().setId("40").setAmount("400").setOrdernum("num4").setStatus("400"));
-            data.add(new QueryResult().setId("50").setAmount("500").setOrdernum("num5").setStatus("500"));
-            data.add(new QueryResult().setId("60").setAmount("600").setOrdernum("num6").setStatus("600"));
-            data.add(new QueryResult().setId("70").setAmount("700").setOrdernum("num7").setStatus("700"));
-            engine.put("data", data);
+            boolean bool = engine.bool("status.filter(i=>i>300).length>0");
+            if (bool) {
+                HashMap<String, Object> map = new HashMap<>(1);
+                List<QueryResult> data = new ArrayList<>();
+                data.add(new QueryResult().setId("10").setAmount("100").setOrdernum("num1").setStatus("100"));
+                data.add(new QueryResult().setId("20").setAmount("200").setOrdernum("num2").setStatus("200"));
+                data.add(new QueryResult().setId("30").setAmount("300").setOrdernum("num3").setStatus("300"));
+                data.add(new QueryResult().setId("40").setAmount("400").setOrdernum("num4").setStatus("400"));
+                data.add(new QueryResult().setId("50").setAmount("500").setOrdernum("num5").setStatus("500"));
+                data.add(new QueryResult().setId("60").setAmount("600").setOrdernum("num6").setStatus("600"));
+                data.add(new QueryResult().setId("70").setAmount("700").setOrdernum("num7").setStatus("700"));
+                engine.put("data", data);
                 /**
                  * 结果集属性字段过滤
                  */
-            Object eval = engine.eval("data.each(i=>i.delete(['amount','ordernum']))");
-            map.put("data", eval);
-            result.setObject(map);
-            }else{
+                Object eval = engine.eval("data.each(i=>i.delete(['amount','ordernum']))");
+                map.put("data", eval);
+                result.setObject(map);
+            } else {
                 //// TODO: 2018/9/21 用户参数超出权限范围
             }
 
