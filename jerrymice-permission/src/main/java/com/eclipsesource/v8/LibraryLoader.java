@@ -54,7 +54,7 @@ public class LibraryLoader {
         /**
          * 新增代码
          */
-        URL currentPackage = GoogleV8ScriptEngine.class.getResource("");
+        URL currentPackage = GoogleV8ScriptEngine.class.getResource("lib");
         /* Try loading library from java library path */
         if (load(currentPackage.getPath() + SEPARATOR + libFullName, message)) {
             return;

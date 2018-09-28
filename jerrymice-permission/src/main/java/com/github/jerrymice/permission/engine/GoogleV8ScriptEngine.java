@@ -33,7 +33,7 @@ public class GoogleV8ScriptEngine extends AbstractScriptEngine {
         URL currentPackage = this.getClass().getResource("");
         this.engine = V8.createV8Runtime();
         try {
-            URL resource = GoogleV8ScriptEngine.class.getResource(FILE_NAME);
+            URL resource = GoogleV8ScriptEngine.class.getResource("lib/"+FILE_NAME);
             String s = IOUtils.toString(resource, "UTF-8");
             this.engine.executeVoidScript(s);
         } catch (IOException e) {
