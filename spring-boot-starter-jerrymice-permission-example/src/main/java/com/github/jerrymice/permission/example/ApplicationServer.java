@@ -7,8 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 /**
  * @author tumingjian
- * @date 2018/9/14
- * 说明:
+ * 说明: spring boot 启动类
  */
 @EnabledJerryMicePermission
 @SpringBootApplication

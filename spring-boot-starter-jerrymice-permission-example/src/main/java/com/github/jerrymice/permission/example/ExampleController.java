@@ -31,7 +31,14 @@ import java.util.List;
  */
 @Controller
 public class ExampleController {
-
+    /**
+     * 登录
+     *
+     * @param session  当前用户session
+     * @param username 用户名
+     * @param password 密码
+     * @return 结果集
+     */
     @RequestMapping("/api/example/login")
     @ResponseBody
     public Result login(HttpSession session, String username, String password) {
@@ -47,7 +54,7 @@ public class ExampleController {
     /**
      * 用户必须拥有编号为R1001的查询资源权限,才能访问该接口
      *
-     * @return
+     * @return 结果集
      */
     @RequestMapping("/api/example/query")
     @ResponseBody
@@ -59,7 +66,7 @@ public class ExampleController {
     /**
      * 用户必须拥有编号为R1002的编辑资源权限,才能访问该接口
      *
-     * @return
+     * @return 结果集
      */
     @RequestMapping("/api/example/edit")
     @ResponseBody
@@ -71,7 +78,7 @@ public class ExampleController {
     /**
      * 用户必须拥有编号为R1003的下载资源权限,才能访问该接口
      *
-     * @return
+     * @return 结果集
      */
     @RequestMapping("/api/example/download")
     @ResponseBody
@@ -83,7 +90,7 @@ public class ExampleController {
     /**
      * 用户必须拥有编号为R1004的删除资源权限,才能访问该接口
      *
-     * @return
+     * @return 结果集
      */
     @RequestMapping("/api/example/delete")
     @ResponseBody
@@ -95,7 +102,7 @@ public class ExampleController {
     /**
      * 用户必须拥有资源查询,编辑,下载三个功能才能访问该接口
      *
-     * @return
+     * @return 结果集
      */
     @RequestMapping("/api/example/share")
     @ResponseBody
@@ -110,7 +117,7 @@ public class ExampleController {
      * 第一个注解,与(第二个和第三个等价). 用户角色为管理员且用户拥有删除资源权限且用户名为admin的用户有权访问,或者用户名为administrator的用户有权访问
      * 可以根据自己的情况拆分.
      *
-     * @return
+     * @return 结果集
      */
     @RequestMapping("/api/example/deleteAll")
     @ResponseBody
@@ -129,7 +136,7 @@ public class ExampleController {
      * 或条件 可以拆分为多个注解
      * 用户必须有查询资源权限,且特权类型==2,或者用户名为test的用户可以访问
      *
-     * @return
+     * @return 结果集
      */
     @RequestMapping("/api/example/vip")
     @ResponseBody
@@ -141,18 +148,22 @@ public class ExampleController {
 
     /**
      * 更高级的参数控制和结果集控制
-     * 1.@PermissionMeta(defaultValue = "E.status",eval = "status.intersect(E['status'])")
-     * 属性var:在JS中定义一个变量名,如果未指定将定义一个与java方法参数名相同的JS变量名(这里为status),
-     * 属性defaultValue:如果前台传入的值为Null,那么取默认值E.status
-     * eval: 取E.status与status两个数组的交集.作为参数结果.可以理解为过滤掉status参数中权限不足的数组元素.
-     * 属性resultVar: 要返回的结果变量.如果resultVar的值为空,那么默认为变量名java方法的参数名(这里为status)
-     * <p>
-     * 2.@PermissionResult(eval = "result.object.data.each(i=>i.delete(E.selectColumn))")
+     *
+     * @param ab     测试参数1
+     * @param status 可查询的状态列表值
+     *               1.@PermissionMeta(defaultValue = "E.status",eval = "status.intersect(E['status'])")
+     *               属性var:在JS中定义一个变量名,如果未指定将定义一个与java方法参数名相同的JS变量名(这里为status),
+     *               属性defaultValue:如果前台传入的值为Null,那么取默认值E.status
+     *               eval: 取E.status与status两个数组的交集.作为参数结果.可以理解为过滤掉status参数中权限不足的数组元素.
+     *               属性resultVar: 要返回的结果变量.如果resultVar的值为空,那么默认为变量名java方法的参数名(这里为status)
+     *               <p>
+     * @param id     当前用户ID
+     * @param ddd    测试参数2
+     * @return 结果集
+     * 2.@PermissionResult(eval = "result.object.data.each(i=&gt;i.delete(E.selectColumn))")
      * 属性var:在JS中定义一个变量,value值是当前接口的返回值,如果var的值为空,那么默认为变量名为result
      * 属性eval:在result.object.data中删除E.selectColumn数组元素中存在的列.
      * 属性resultVar: 要返回的结果变量.如果resultVar的值为空,那么默认为变量名result
-     *
-     * @return
      */
     @RequestMapping("/api/example/select")
     @ResponseBody
@@ -178,8 +189,9 @@ public class ExampleController {
     /**
      * API操作
      *
-     * @param engine 当前用户所拥有的权限引擎.
-     * @return
+     * @param engine 当前用户所拥有的权限引擎.由spring mvc 自动注入当前用户所属的permission engine
+     * @param status 用户可以有权限访问的状态列表.此处@PermissionMeta的作用是把这个值定义为一个JS变量
+     * @return 结果集
      */
     @RequestMapping("/api/example/page")
     @ResponseBody

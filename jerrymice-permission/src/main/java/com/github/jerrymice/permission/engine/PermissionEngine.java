@@ -24,28 +24,28 @@ public interface PermissionEngine {
     /**
      * 返回当前用户
      *
-     * @return Set<Property>
+     * @return 当前用户实体
      */
     Set<Property> user();
 
     /**
      * 返回当前用户所拥有的资源
      *
-     * @return Set<Property>
+     * @return 当前用户资源列表
      */
     Set<Property> resources();
 
     /**
      * 返回当前用户所拥有的角色信息
      *
-     * @return Set<Property>
+     * @return 当前用户角色列表
      */
     Set<Property> characters();
 
     /**
      * 返回当前用户添加的额外数据变量map
      *
-     * @return Map<String, Object>
+     * @return 当前用户扩展数据
      */
     Map<String, Object> extendData();
 

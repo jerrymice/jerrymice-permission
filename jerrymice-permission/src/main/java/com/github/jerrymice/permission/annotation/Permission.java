@@ -24,7 +24,7 @@ public @interface Permission {
 
     /**
      * 注释内容
-     * @return
+     * @return 注释
      */
     String remark() default "";
 }

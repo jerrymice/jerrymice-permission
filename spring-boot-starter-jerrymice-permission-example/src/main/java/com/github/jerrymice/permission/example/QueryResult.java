@@ -5,7 +5,6 @@ import lombok.experimental.Accessors;
 
 /**
  * @author tumingjian
- * @date 2018/9/21
  * 说明:
  */
 @Data
