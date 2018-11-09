@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.github.jerrymice.common</groupId>
         <artifactId>common-pom</artifactId>
-        <version>0.0.2</version>
+        <version>0.0.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.jerrymice</groupId>
